@@ -17,6 +17,7 @@
 <head>
 <title>Attester</title>
 <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="/general.css">
 <link rel="stylesheet" href="/executionStates/executionStates.css">
 <link rel="stylesheet" href="/tasksTable/tasksTable.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -44,20 +45,15 @@
 			<h1>Attester results</h1>
 		</div>
 		<button class="pull-right btn btn-default btn-xs"
-			ng-show="!mainCtrl.configVisible"
-			ng-click="mainCtrl.configVisible = true">
+			ng-class="{active: mainCtrl.configVisible}"
+			ng-click="mainCtrl.configVisible = !mainCtrl.configVisible">
 			<span class="glyphicon glyphicon-wrench"></span>
 		</button>
-		<div ng-show="mainCtrl.configVisible">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					Configuration
-					<button class="pull-right btn btn-default btn-xs active"
-						ng-click="mainCtrl.configVisible = false">
-						<span class="glyphicon glyphicon-wrench"></span>
-					</button>
-				</div>
-				<div class="panel-body">
+		<div style="position: relative;" ng-if="mainCtrl.configVisible">
+			<div class="popover bottom right-popover">
+				<div class="arrow"></div>
+				<h3 class="popover-title">Configuration</h3>
+				<div class="popover-content">
 					<form class="form-horizontal" role="form" novalidate>
 						<div class="form-group">
 							<label class="col-sm-2 control-label">Test URL</label>

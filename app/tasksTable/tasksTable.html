@@ -1,0 +1,80 @@
+<!--
+    Copyright 2014 Amadeus s.a.s.
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+<div class="btn-group btn-group-sm pull-right" title="Items per page"
+	style="margin: 20px 0;">
+	<button type="button" class="btn btn-default"
+		ng-class="{active: ctrl.pageSize==10}" ng-click="ctrl.pageSize=10">10</button>
+	<button type="button" class="btn btn-default"
+		ng-class="{active: ctrl.pageSize==20}" ng-click="ctrl.pageSize=20">20</button>
+	<button type="button" class="btn btn-default"
+		ng-class="{active: ctrl.pageSize==40}" ng-click="ctrl.pageSize=40">40</button>
+	<button type="button" class="btn btn-default"
+		ng-class="{active: ctrl.pageSize==80}" ng-click="ctrl.pageSize=80">80</button>
+</div>
+
+<pagination total-items="ctrl.tasksNumber" ng-model="ctrl.currentPage"
+	items-per-page="ctrl.pageSize" max-size="10" boundary-links="true"></pagination>
+
+<table class="table table-bordered table-hover">
+	<thead>
+		<tr>
+			<th colspan="2">Test <span class="pull-right"> <span
+					class="badge">{{ctrl.tasksNumber}}</span>
+					<button type="button" class="btn btn-default btn-xs"
+						title="Export this list of {{ctrl.tasksNumber}} test(s)"
+						ng-click="ctrl.exportTasks()">
+						<span class=" glyphicon glyphicon-new-window"></span>
+					</button>
+			</span>
+			</th>
+			<th ng-repeat="browser in campaign.browsersArray">{{browser.name}}</th>
+		</tr>
+		<tr>
+			<td><input type="text" class="form-control input-sm"
+				placeholder="Filter tests" ng-model="ctrl.filterTestName"></td>
+			<td ng-if="campaign.browsersArray.length &gt; 1" class="task-result"><span
+				ng-class="ctrl.getFilterAllClass('success')"
+				ng-click="ctrl.toggleFilterAll('success')"></span> <span
+				ng-class="ctrl.getFilterAllClass('error')"
+				ng-click="ctrl.toggleFilterAll('error')"></span> <span
+				ng-class="ctrl.getFilterAllClass('ignored')"
+				ng-click="ctrl.toggleFilterAll('ignored')"></span> <span
+				ng-class="ctrl.getFilterAllClass('waiting')"
+				ng-click="ctrl.toggleFilterAll('waiting')"></span></td>
+			<td ng-repeat="browser in campaign.browsersArray" class="task-result">
+				<span ng-class="ctrl.getFilterClass(browser, 'success')"
+				ng-click="ctrl.toggleFilter(browser, 'success')"></span> <span
+				ng-class="ctrl.getFilterClass(browser, 'error')"
+				ng-click="ctrl.toggleFilter(browser, 'error')"></span> <span
+				ng-class="ctrl.getFilterClass(browser, 'ignored')"
+				ng-click="ctrl.toggleFilter(browser, 'ignored')"></span> <span
+				ng-class="ctrl.getFilterClass(browser, 'waiting')"
+				ng-click="ctrl.toggleFilter(browser, 'waiting')"></span>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="task in ctrl.getDisplayedTasks()"
+			ng-class="ctrl.getTRClass(task)">
+			<td colspan="2">{{task.name}} <a
+				ng-href="{{ctrl.getTaskLink(task)}}" ng-if="testURL"
+				ng-click="$event.preventDefault()"><span
+					class="glyphicon glyphicon-link"></span></a></td>
+			<td ng-repeat="browser in campaign.browsersArray"
+				ng-click="ctrl.taskClick(task, browser)" class="task-result"><span
+				ng-class="ctrl.getIconClass(task, browser)"></span></td>
+		</tr>
+	</tbody>
+</table>

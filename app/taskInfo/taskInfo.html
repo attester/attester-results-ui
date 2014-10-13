@@ -1,0 +1,90 @@
+<!--
+    Copyright 2014 Amadeus s.a.s.
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+<form class="form-horizontal" role="form">
+	<div class="form-group" ng-if="task.executions.length &gt; 1">
+		<label class="col-sm-2 control-label">Execution</label>
+		<div class="col-sm-10">
+			<select id="taskInfoSelectExecution" class="form-control"
+				ng-model="ctrl.currentExecution"
+				ng-options="ctrl.getExecutionLabel(execution) for execution in task.executions">
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="col-sm-2 control-label">State</label>
+		<div class="col-sm-10">
+			<p class="form-control-static">
+				<span ng-class="ctrl.getStateIcon(ctrl.currentExecution)"></span> {{
+				ctrl.getState(ctrl.currentExecution) }}
+			</p>
+		</div>
+	</div>
+	<div class="form-group" ng-if="ctrl.currentExecution.started">
+		<label class="col-sm-2 control-label">Slave</label>
+		<div class="col-sm-10">
+			<p class="form-control-static">{{
+				ctrl.getSlaveAddress(ctrl.currentExecution) }}</p>
+		</div>
+	</div>
+	<div class="form-group" ng-if="ctrl.currentExecution.started">
+		<label class="col-sm-2 control-label">User agent</label>
+		<div class="col-sm-10">
+			<p class="form-control-static">{{
+				ctrl.currentExecution.started.slave.userAgent }}</p>
+		</div>
+	</div>
+	<div class="form-group" ng-if="ctrl.currentExecution.started">
+		<label class="col-sm-2 control-label">Duration</label>
+		<div class="col-sm-10">
+			<p class="form-control-static">
+				{{ ctrl.getDuration(ctrl.currentExecution) }} ms <small
+					ng-if="!ctrl.currentExecution.finished" class="task-running">
+					still running</small> <small> (start time:
+					{{ctrl.currentExecution.started.time | date:'medium' }})</small>
+			</p>
+		</div>
+	</div>
+	<div class="panel panel-danger"
+		ng-repeat="errorEvent in ctrl.currentExecution.errors">
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				Error in {{ errorEvent.name || errorEvent.taskName }}<small
+					class="pull-right">{{errorEvent.time | date:'medium' }}</small>
+			</h3>
+		</div>
+		<div class="panel-body">
+			<div>{{ errorEvent.error.message }}</div>
+			<div
+				ng-if="errorEvent.error.stack && errorEvent.error.stack.length &gt; 0">
+				<button style="margin: 3px 0px;" class="btn btn-link btn-xs"
+					ng-click="errorEvent.error.stack.$displayed = !errorEvent.error.stack.$displayed">
+					{{errorEvent.error.stack.$displayed ? 'Hide' : 'Show' }} stack</button>
+				<ul collapse="!errorEvent.error.stack.$displayed">
+					<li ng-repeat="stackItem in errorEvent.error.stack">
+						<div>
+							Function:
+							<code>{{ stackItem['function'] }}</code>
+						</div>
+						<div ng-if="stackItem.file">
+							File:
+							<code>{{ stackItem.file }}</code>
+							<small ng-if="stackItem.line">line {{ stackItem.line }}</small>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</form>

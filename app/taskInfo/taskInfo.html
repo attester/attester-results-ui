@@ -56,6 +56,13 @@
 			</p>
 		</div>
 	</div>
+	<div class="panel panel-default" ng-if="ctrl.currentExecution.tests">
+		<div class="panel-heading">Details</div>
+		<div class="panel-body">
+			<tests-details tests="ctrl.currentExecution.tests"
+				task-execution="ctrl.currentExecution" campaign="campaign"></tests-details>
+		</div>
+	</div>
 	<div class="panel panel-danger"
 		ng-repeat="errorEvent in ctrl.currentExecution.errors">
 		<div class="panel-heading">

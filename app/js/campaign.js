@@ -128,6 +128,18 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
         return task;
     };
 
+    var getLastExecution = function (event) {
+        if (queueAfterTasksList.call(this, event)) {
+            return;
+        }
+        var task = this.tasksMap[event.taskId];
+        if (!task) {
+            console.log("Missing task id: " + event.taskId);
+            return;
+        }
+        return task.lastExecution;
+    };
+
     var processEvents = {
         "tasksList" : function (event) {
             this.campaignId = event.campaignId;
@@ -167,19 +179,77 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
             }
         },
         "error" : function (event) {
-            if (queueAfterTasksList.call(this, event)) {
+            var lastExecution = getLastExecution.call(this, event);
+            if (!lastExecution) {
                 return;
             }
-            var task = this.tasksMap[event.taskId];
-            if (!task) {
-                console.log("Missing task id: " + event.taskId);
-                return;
-            }
-            var lastExecution = task.lastExecution;
             if (!lastExecution.errors) {
                 lastExecution.errors = [];
             }
             lastExecution.errors.push(event);
+            var testId = event.testId;
+            if (testId) {
+                var testsMap = lastExecution.testsMap;
+                var currentTest = testsMap && testsMap[testId];
+                if (!currentTest) {
+                    console.log("error: Missing test id " + testId + " in task " + event.taskId);
+                    return;
+                }
+                if (!currentTest.errors) {
+                    currentTest.errors = [];
+                }
+                currentTest.errors.push(event);
+            }
+        },
+        "testStarted" : function (event) {
+            var lastExecution = getLastExecution.call(this, event);
+            if (!lastExecution) {
+                return;
+            }
+            var testId = event.testId;
+            var testsMap = lastExecution.testsMap;
+            if (!testsMap) {
+                testsMap = lastExecution.testsMap = {};
+            }
+            if (testsMap[testId]) {
+                console.log("testStarted: Duplicate test id " + testId + " for task " + event.taskId);
+                return;
+            }
+            var currentTest = {
+                testId : testId,
+                name : event.name,
+                method : event.method,
+                started : event
+            };
+            var parent = lastExecution;
+            var parentTestId = event.parentTestId;
+            if (parentTestId) {
+                parent = testsMap[parentTestId];
+                if (!parent || parent.finished) {
+                    console.log("testStarted: Missing unfinished parent test " + parentTestId + " for test " + testId
+                            + " in task " + event.taskId);
+                    return;
+                }
+            }
+            var testsArray = parent.tests;
+            if (!testsArray) {
+                testsArray = parent.tests = [];
+            }
+            testsMap[testId] = currentTest;
+            testsArray.push(currentTest);
+        },
+        "testFinished" : function (event) {
+            var lastExecution = getLastExecution.call(this, event);
+            if (!lastExecution) {
+                return;
+            }
+            var testsMap = lastExecution.testsMap;
+            var currentTest = testsMap[event.testId];
+            if (!currentTest || currentTest.finished) {
+                console.log("testFinished: Missing unfinished test " + event.testId + " in task " + event.taskId);
+                return;
+            }
+            currentTest.finished = event;
         }
     };
 

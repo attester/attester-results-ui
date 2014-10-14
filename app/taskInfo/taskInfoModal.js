@@ -13,7 +13,24 @@
  * limitations under the License.
  */
 
-angular.module("attesterTaskInfoModal", ["attesterTaskInfo"]).controller("AttesterTaskInfoModalController", ["task",
-        function (task) {
-            this.task = task;
+angular.module("attesterTaskInfoModal", ["attesterTaskInfo"]).factory("attesterTaskInfoModal", ["$modal",
+        function ($modal) {
+            var taskInfoModalController = ["config", function (config) {
+                        this.task = config.task;
+                        this.campaign = config.campaign;
+                    }];
+
+            return function (config) {
+                $modal.open({
+                    templateUrl : '/taskInfo/taskInfoModal.html',
+                    controllerAs : "ctrl",
+                    controller : taskInfoModalController,
+                    resolve : {
+                        config : function () {
+                            return config;
+                        }
+                    },
+                    size : "lg"
+                });
+            }
         }]);

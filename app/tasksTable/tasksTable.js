@@ -14,7 +14,8 @@
  */
 
 angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutionStates", "exportFile"]).directive("tasksTable", [
-        "$modal", "AttesterExecutionStates", "exportFile", function ($modal, executionStates, exportFile) {
+        "attesterTaskInfoModal", "AttesterExecutionStates", "exportFile",
+        function (attesterTaskInfoModal, executionStates, exportFile) {
 
             return {
                 restrict : "E",
@@ -163,16 +164,9 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                     this.taskClick = function (task, browser) {
                         var browserTask = task.browsers[browser.name];
                         if (browserTask) {
-                            $modal.open({
-                                templateUrl : '/taskInfo/taskInfoModal.html',
-                                controllerAs : "ctrl",
-                                controller : "AttesterTaskInfoModalController",
-                                resolve : {
-                                    task : function () {
-                                        return browserTask;
-                                    }
-                                },
-                                size : "lg"
+                            attesterTaskInfoModal({
+                                task : browserTask,
+                                campaign : $scope.campaign
                             });
                         }
                     };

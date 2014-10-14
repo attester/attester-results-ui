@@ -13,14 +13,15 @@
  * limitations under the License.
  */
 
-angular.module("attesterTaskInfo", ["attesterExecutionStates"]).directive("taskInfo", ["AttesterExecutionStates",
-        function (executionStates) {
+angular.module("attesterTaskInfo", ["attesterExecutionStates", "attesterTestsDetails"]).directive("taskInfo", [
+        "AttesterExecutionStates", function (executionStates) {
 
             return {
                 restrict : "E",
                 templateUrl : "/taskInfo/taskInfo.html",
                 scope : {
-                    task : "=task"
+                    task : "=",
+                    campaign : "="
                 },
                 controllerAs : "ctrl",
                 controller : ["$scope", function ($scope) {
@@ -48,8 +49,7 @@ angular.module("attesterTaskInfo", ["attesterExecutionStates"]).directive("taskI
                     this.getDuration = function (execution) {
                         var startedTime = execution.started.time;
                         var finished = execution.finished || {
-                            /* Using Math.floor to prevent angular 'Infinite $digest Loop' error */
-                            time : Math.max(startedTime, Math.floor(Date.now() / 1000) * 1000)
+                            time : $scope.campaign.lastUpdate
                         };
                         return finished.time - startedTime;
                     };

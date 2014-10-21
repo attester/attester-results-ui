@@ -29,6 +29,9 @@ angular.module("attesterLiveCampaign", ["attesterCampaign"]).factory("AttesterLi
                 var socket;
 
                 var onConnect = function () {
+                    if (!socket) {
+                        return;
+                    }
                     liveCampaign.connected = true;
                     socket.emit('hello', {
                         type : 'viewer'
@@ -36,12 +39,18 @@ angular.module("attesterLiveCampaign", ["attesterCampaign"]).factory("AttesterLi
                     notifyDataModelChange();
                 };
                 var onFirstResults = function (event) {
+                    if (!socket) {
+                        return;
+                    }
                     liveCampaign.resultsReceived = event.transmitted;
                     liveCampaign.resultsTotal = event.total;
                     socket.emit("firstResults");
                     notifyDataModelChange();
                 };
                 var onResult = function (event) {
+                    if (!socket) {
+                        return;
+                    }
                     var campaign = liveCampaign.campaign;
                     if (!campaign) {
                         campaign = liveCampaign.campaign = new AttesterCampaign();
@@ -87,7 +96,9 @@ angular.module("attesterLiveCampaign", ["attesterCampaign"]).factory("AttesterLi
                     var mySocket = socket;
                     if (mySocket) {
                         socket = null;
-                        mySocket.disconnect();
+                        setTimeout(function () {
+                            mySocket.disconnect();
+                        });
                     }
                 };
 

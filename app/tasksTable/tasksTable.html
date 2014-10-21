@@ -39,12 +39,12 @@
 					</button>
 			</span>
 			</th>
-			<th ng-repeat="browser in campaign.browsersArray">{{browser.name}}</th>
+			<th ng-repeat="browser in browsersArray">{{browser.name}}</th>
 		</tr>
 		<tr>
 			<td><input type="text" class="form-control input-sm"
 				placeholder="Filter tests" ng-model="ctrl.filterTestName"></td>
-			<td ng-if="campaign.browsersArray.length &gt; 1" class="task-result"><span
+			<td class="task-result"><span
 				ng-class="ctrl.getFilterAllClass('success')"
 				ng-click="ctrl.toggleFilterAll('success')"></span> <span
 				ng-class="ctrl.getFilterAllClass('error')"
@@ -53,16 +53,15 @@
 				ng-click="ctrl.toggleFilterAll('ignored')"></span> <span
 				ng-class="ctrl.getFilterAllClass('waiting')"
 				ng-click="ctrl.toggleFilterAll('waiting')"></span></td>
-			<td ng-repeat="browser in campaign.browsersArray" class="task-result">
-				<span ng-class="ctrl.getFilterClass(browser, 'success')"
+			<td ng-repeat="browser in browsersArray" class="task-result"><span
+				ng-class="ctrl.getFilterClass(browser, 'success')"
 				ng-click="ctrl.toggleFilter(browser, 'success')"></span> <span
 				ng-class="ctrl.getFilterClass(browser, 'error')"
 				ng-click="ctrl.toggleFilter(browser, 'error')"></span> <span
 				ng-class="ctrl.getFilterClass(browser, 'ignored')"
 				ng-click="ctrl.toggleFilter(browser, 'ignored')"></span> <span
 				ng-class="ctrl.getFilterClass(browser, 'waiting')"
-				ng-click="ctrl.toggleFilter(browser, 'waiting')"></span>
-			</td>
+				ng-click="ctrl.toggleFilter(browser, 'waiting')"></span></td>
 		</tr>
 	</thead>
 	<tbody>
@@ -72,7 +71,7 @@
 				ng-href="{{ctrl.getTaskLink(task)}}" ng-if="testURL"
 				ng-click="$event.preventDefault()"><span
 					class="glyphicon glyphicon-link"></span></a></td>
-			<td ng-repeat="browser in campaign.browsersArray"
+			<td ng-repeat="browser in browsersArray"
 				ng-click="ctrl.taskClick(task, browser)" class="task-result"><span
 				ng-class="ctrl.getIconClass(task, browser)"></span></td>
 		</tr>

@@ -115,7 +115,9 @@
 				max="1000" animate="false"></progressbar>
 		</div>
 		<div ng-if="source.campaign">
-			<tasks-table campaign="source.campaign"
+			<tasks-table browsers-array="source.campaign.browsersArray"
+				browsers-map="source.campaign.browsersMap"
+				tasks-groups="source.campaign.tasksGroups"
 				test-url="mainCtrl.config.testURL"></tasks-table>
 		</div>
 		</tab> <tab> <tab-heading> <span

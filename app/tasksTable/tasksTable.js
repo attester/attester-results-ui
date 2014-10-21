@@ -21,8 +21,10 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                 restrict : "E",
                 templateUrl : "/tasksTable/tasksTable.html",
                 scope : {
-                    campaign : "=campaign",
-                    testURL : "=testUrl"
+                    browsersArray : "=",
+                    browsersMap : "=",
+                    tasksGroups : "=",
+                    testURL : "="
                 },
                 controllerAs : "ctrl",
                 controller : ["$scope", function ($scope) {
@@ -35,8 +37,7 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                     this.currentPage = 1;
 
                     this.getTasks = function () {
-                        var campaign = $scope.campaign;
-                        var res = campaign.tasksGroups;
+                        var res = $scope.tasksGroups;
                         var filterTestName = this.filterTestName.toLowerCase();
                         if (filterTestName) {
                             res = res.filter(function (taskGroup) {
@@ -47,14 +48,14 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                         if (filterTestState) {
                             var filteredBrowsers = this.filteredBrowsers;
                             var filterAll = this.filterAll;
-                            var browsers = filterAll ? campaign.browsersArray : filteredBrowsers;
+                            var browsers = filterAll ? $scope.browsersArray : filteredBrowsers;
                             var browsersLength = browsers.length;
                             res = res.filter(function (taskGroup) {
                                 var isIncluded = !filterAll;
                                 for (var i = 0; i < browsersLength; i++) {
                                     var curBrowser = browsers[i];
-                                    var curState = executionStates.getTaskState(taskGroup.browsers[curBrowser.name]);
-                                    var filterName = curState + "-" + curBrowser.name;
+                                    var curState = executionStates.getTaskState(taskGroup.browsers[curBrowser.browserKey]);
+                                    var filterName = curState + "-" + curBrowser.browserKey;
                                     var isFilteredBrowser = !filterAll || filteredBrowsers.indexOf(curBrowser) > -1;
                                     var isExcluded = isFilteredBrowser && !filterTestState[filterName];
                                     if (isExcluded) {
@@ -82,8 +83,8 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                             var allSuccess = true;
                             var allError = true;
                             var anyError = false;
-                            for (var browser in browsers) {
-                                var browserTask = browsers[browser];
+                            $scope.browsersArray.forEach(function (browser) {
+                                var browserTask = browsers[browser.browserKey];
                                 var lastExecution = browserTask ? browserTask.lastExecution : null;
                                 if (lastExecution) {
                                     if (!lastExecution.finished || lastExecution.errors) {
@@ -96,13 +97,13 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                                         allError = false;
                                     }
                                 }
-                            }
+                            });
                             return allSuccess ? "success" : anyError ? allError ? "danger" : "warning" : "";
                         }
                     };
 
                     this.getIconClass = function (task, browser) {
-                        return executionStates.getTaskIcon(task.browsers[browser.name]);
+                        return executionStates.getTaskIcon(task.browsers[browser.browserKey]);
                     };
 
                     this.toggleFilter = function (browser, state) {
@@ -110,22 +111,22 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                         if (!filterTestState) {
                             filterTestState = this.filterTestState = {};
                         }
-                        var filterName = state + (browser ? "-" + browser.name : "");
+                        var filterName = state + (browser ? "-" + browser.browserKey : "");
                         filterTestState[filterName] = !filterTestState[filterName];
                         this.updateFilters();
                     };
 
                     this.updateFilters = function () {
-                        var browsersMap = $scope.campaign.browsersMap;
+                        var browsersMap = $scope.browsersMap;
                         var filterTestState = this.filterTestState;
                         var filteredBrowsers = [];
                         var filterAll = false;
                         if (filterTestState) {
                             for (var filterName in filterTestState) {
                                 if (filterTestState[filterName]) {
-                                    var browserName = filterName.replace(/^[a-z]+(-|$)/, "");
-                                    if (browserName) {
-                                        var browser = browsersMap[browserName];
+                                    var browserKey = filterName.replace(/^[a-z]+(-|$)/, "");
+                                    if (browserKey) {
+                                        var browser = browsersMap[browserKey];
                                         if (filteredBrowsers.indexOf(browser) == -1) {
                                             filteredBrowsers.push(browser);
                                         }
@@ -147,7 +148,7 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                     this.getFilterClass = function (browser, state) {
                         var filterTestState = this.filterTestState;
                         var res = executionStates.getStateIcon(state);
-                        var filterName = state + (browser ? "-" + browser.name : "");
+                        var filterName = state + (browser ? "-" + browser.browserKey : "");
                         var enabled = filterTestState && filterTestState[filterName];
                         res += enabled ? " filter-enabled" : " filter-disabled";
                         return res;
@@ -162,11 +163,11 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                     };
 
                     this.taskClick = function (task, browser) {
-                        var browserTask = task.browsers[browser.name];
+                        var browserTask = task.browsers[browser.browserKey];
                         if (browserTask) {
                             attesterTaskInfoModal({
                                 task : browserTask,
-                                campaign : $scope.campaign
+                                campaign : browser.campaign
                             });
                         }
                     };

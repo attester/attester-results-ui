@@ -14,8 +14,12 @@
  */
 
 angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
+    var campaignKey = 0;
 
     var AttesterCampaign = function () {
+        campaignKey++;
+        // campaignKey is unique among all loaded campaigns:
+        this.campaignKey = campaignKey;
         this.events = [];
         this.campaignId = null;
         this.tasksMap = null;
@@ -27,10 +31,13 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
     };
 
     var getBrowser = function (browserName) {
-        var browser = this.browsersMap[browserName];
+        var browserKey = this.campaignKey + "-" + browserName;
+        var browser = this.browsersMap[browserKey];
         if (!browser) {
-            browser = this.browsersMap[browserName] = {
-                name : browserName
+            browser = this.browsersMap[browserKey] = {
+                name : browserName,
+                campaign : this,
+                browserKey : browserKey
             };
             this.browsersArray.push(browser);
         }
@@ -56,16 +63,17 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
             }
         }
         task.browser = getBrowser.call(this, browserName);
+        var browserKey = task.browser.browserKey;
         task.taskGroup = taskGroup;
         var taskGroupBrowsers = taskGroup.browsers;
         if (!taskGroupBrowsers) {
             taskGroupBrowsers = taskGroup.browsers = {};
             this.tasksGroups.push(taskGroup);
         }
-        if (taskGroupBrowsers[browserName]) {
+        if (taskGroupBrowsers[browserKey]) {
             console.error("Duplicate task (" + task.taskId + ") for browser " + browserName);
         } else {
-            taskGroupBrowsers[browserName] = task;
+            taskGroupBrowsers[browserKey] = task;
         }
     };
 

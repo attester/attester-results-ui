@@ -15,45 +15,40 @@
 <form class="form-horizontal" role="form" name="form"
 	ng-submit="ctrl.submit()" drop="ctrl.drop($dataTransfer)"
 	drop-variable="ctrl.dropping" novalidate>
-	<div class="modal-header">
-		<h4 class="modal-title">Attester results viewer</h4>
-	</div>
-	<div class="modal-body">
-		<div class="alert alert-info" ng-if="ctrl.dropping">Drop this
-			item here to open it.</div>
-		<div class="form-group">
-			<label class="col-sm-3 control-label">Source</label>
-			<div class="col-sm-7">
-				<div class="radio">
-					<label><input type="radio" value="serverURL"
-						ng-model="ctrl.sourceType"> Live attester server </label>
-				</div>
-				<div class="radio">
-					<label><input type="radio" value="reportURL"
-						ng-model="ctrl.sourceType"> Recorded attester log </label>
-				</div>
-				<div class="radio" ng-hide="ctrl.dropping">Tip: drop an
-					attester log json file or a link to such a file here to open it.</div>
+	<div class="alert alert-info" ng-if="ctrl.dropping">Drop this
+		item here to open it.</div>
+	<div class="form-group">
+		<label class="col-sm-4 control-label">Source</label>
+		<div class="col-sm-4">
+			<div class="radio">
+				<label><input type="radio" value="serverURL"
+					ng-model="ctrl.sourceType"> Live attester server </label>
 			</div>
-		</div>
-
-		<div class="form-group" ng-if="ctrl.sourceType == 'serverURL'">
-			<label class="col-sm-3 control-label">Server URL</label>
-			<div class="col-sm-7">
-				<input type="url" class="form-control" ng-model="ctrl.serverURL"
-					required>
+			<div class="radio">
+				<label><input type="radio" value="reportURL"
+					ng-model="ctrl.sourceType"> Recorded attester log </label>
 			</div>
-		</div>
-
-		<div class="form-group" ng-if="ctrl.sourceType == 'reportURL'">
-			<label class="col-sm-3 control-label">Report URL</label>
-			<div class="col-sm-7">
-				<input type="url" class="form-control" ng-model="ctrl.reportURL"
-					required>
-			</div>
+			<div class="radio" ng-hide="ctrl.dropping">Tip: drop an
+				attester log json file or a link to such a file here to open it.</div>
 		</div>
 	</div>
-	<div class="modal-footer">
+
+	<div class="form-group" ng-if="ctrl.sourceType == 'serverURL'">
+		<label class="col-sm-4 control-label">Server URL</label>
+		<div class="col-sm-4">
+			<input type="url" class="form-control" ng-model="ctrl.serverURL"
+				required>
+		</div>
+	</div>
+
+	<div class="form-group" ng-if="ctrl.sourceType == 'reportURL'">
+		<label class="col-sm-4 control-label">Report URL</label>
+		<div class="col-sm-4">
+			<input type="url" class="form-control" ng-model="ctrl.reportURL"
+				required>
+		</div>
+	</div>
+	<div class="text-center">
 		<button type="button" class="btn btn-primary"
 			ng-click="form.$valid && ctrl.submit()" ng-disabled="form.$invalid">OK</button>
 	</div>

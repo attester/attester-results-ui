@@ -43,9 +43,7 @@
 		src="/campaignChooser/campaignChooser.js"></script>
 	<div class="container-fluid"
 		ng-controller="MainViewController as mainCtrl">
-		<div class="page-header">
-			<h1>Attester results</h1>
-		</div>
+		<h1>Attester results</h1>
 		<button class="pull-right btn btn-default btn-xs"
 			ng-class="{active: mainCtrl.configVisible}"
 			ng-click="mainCtrl.configVisible = !mainCtrl.configVisible">
@@ -69,50 +67,63 @@
 				</div>
 			</div>
 		</div>
-		<div ng-switch="mainCtrl.source.type">
+		<tabset ng-if="mainCtrl.config"> <tab
+			ng-repeat="source in mainCtrl.sources" active="source.active"> <tab-heading>
+		<span ng-if="source.campaign.campaignId">{{source.campaign.campaignId}} </span>
+		<span ng-if="!source.campaign.campaignId">Loading...</span>
+		&nbsp;<button type="button" class="close"
+			ng-click="mainCtrl.removeSource($index)">
+			<span>&times;</span>
+		</button>
+		</tab-heading>
+		<div class="space"></div>
+		<div ng-switch="source.type">
 			<dl class="dl-horizontal" ng-switch-when="serverURL">
 				<dt>Attester server URL</dt>
 				<dd>
-					<a target="_blank" ng-href="{{mainCtrl.source.serverURL}}">{{mainCtrl.source.serverURL}}</a>,
+					<a target="_blank" ng-href="{{source.serverURL}}">{{source.serverURL}}</a>,
 					<span
-						ng-class="{glyphicon: true, 'glyphicon-ok-circle': mainCtrl.source.connected, 'glyphicon-remove-circle': !mainCtrl.source.connected}"></span>
-					{{mainCtrl.source.connected ? 'connected': 'not connected'}}
+						ng-class="{glyphicon: true, 'glyphicon-ok-circle': source.connected, 'glyphicon-remove-circle': !source.connected}"></span>
+					{{source.connected ? 'connected': 'not connected'}}
 				</dd>
 			</dl>
 			<dl class="dl-horizontal" ng-switch-when="reportURL">
 				<dt>Attester report URL</dt>
-				<dd>{{mainCtrl.source.reportURL}}</dd>
+				<dd>{{source.reportURL}}</dd>
 			</dl>
 			<dl class="dl-horizontal" ng-switch-when="file">
 				<dt>Attester report file</dt>
-				<dd>{{mainCtrl.source.file}}</dd>
+				<dd>{{source.file}}</dd>
 			</dl>
 		</div>
-		<div
-			ng-if="mainCtrl.source && !mainCtrl.source.campaign && !mainCtrl.source.error">
+		<div ng-if="!source.campaign && !source.error">
 			<span class="loading"></span> Loading...
 		</div>
-		<alert ng-if="mainCtrl.source.error" type="danger">{{mainCtrl.source.error}}</alert>
-		<dl class="dl-horizontal" ng-if="mainCtrl.source.campaign.campaignId">
+		<alert ng-if="source.error" type="danger">{{source.error}}</alert>
+		<dl class="dl-horizontal" ng-if="source.campaign.campaignId">
 			<dt>Campaign id</dt>
-			<dd>{{mainCtrl.source.campaign.campaignId}}</dd>
+			<dd>{{source.campaign.campaignId}}</dd>
 		</dl>
-		<dl class="dl-horizontal" ng-if="mainCtrl.source.campaign.lastUpdate">
+		<dl class="dl-horizontal" ng-if="source.campaign.lastUpdate">
 			<dt>Last update</dt>
-			<dd>{{mainCtrl.source.campaign.lastUpdate | date: "medium" }}</dd>
+			<dd>{{source.campaign.lastUpdate | date: "medium" }}</dd>
 		</dl>
-		<div
-			ng-if="mainCtrl.source.resultsReceived != mainCtrl.source.resultsTotal">
-			Loading {{mainCtrl.source.resultsReceived}} /
-			{{mainCtrl.source.resultsTotal}}<br>
+		<div ng-if="source.resultsReceived != source.resultsTotal">
+			Loading {{source.resultsReceived}} / {{source.resultsTotal}}<br>
 			<progressbar
-				value="(1000 * mainCtrl.source.resultsReceived / mainCtrl.source.resultsTotal)"
+				value="(1000 * source.resultsReceived / source.resultsTotal)"
 				max="1000" animate="false"></progressbar>
 		</div>
-		<div ng-if="mainCtrl.source.campaign">
-			<tasks-table campaign="mainCtrl.source.campaign"
+		<div ng-if="source.campaign">
+			<tasks-table campaign="source.campaign"
 				test-url="mainCtrl.config.testURL"></tasks-table>
 		</div>
+		</tab> <tab> <tab-heading> <span
+			class="glyphicon glyphicon-plus"></span></tab-heading>
+		<div class="space"></div>
+		<campaign-chooser on-select="mainCtrl.addSource($source)"
+			server-url="mainCtrl.config.serverURL"
+			report-url="mainCtrl.config.reportURL"></campaign-chooser> </tab> </tabset>
 	</div>
 </body>
 </html>

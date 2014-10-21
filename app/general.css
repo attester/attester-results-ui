@@ -20,11 +20,15 @@ html {
 	display: block;
 	max-width: 100%;
 	position: relative;
-	margin-top: 55px;
+	margin-top: 45px;
 	margin-bottom: 20px;
 }
 
 .popover.bottom.right-popover>.arrow {
 	left: auto;
 	right: 4px;
+}
+
+.space {
+	margin-top: 20px;
 }

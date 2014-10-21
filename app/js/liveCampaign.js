@@ -52,7 +52,7 @@ angular.module("attesterLiveCampaign", ["attesterCampaign"]).factory("AttesterLi
                     notifyDataModelChange();
                 };
                 var onConnectError = function () {
-                    if (!liveCampaign.campaign) {
+                    if (socket && !liveCampaign.campaign) {
                         setTimeout(connect, 2000);
                     }
                 };
@@ -83,6 +83,13 @@ angular.module("attesterLiveCampaign", ["attesterCampaign"]).factory("AttesterLi
 
                 this.type = "serverURL";
                 this.serverURL = serverAddress;
+                this.disconnect = function () {
+                    var mySocket = socket;
+                    if (mySocket) {
+                        socket = null;
+                        mySocket.disconnect();
+                    }
+                };
 
                 connect();
             };

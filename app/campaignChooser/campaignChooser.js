@@ -13,101 +13,103 @@
  * limitations under the License.
  */
 
-angular.module("attesterCampaignChooser", ["attesterLiveCampaign", "attesterCampaign"]).factory("AttesterCampaignChooser", [
-        "$modal", "$http", "$rootScope", "AttesterLiveCampaign", "AttesterCampaign",
-        function ($modal, $http, $rootScope, AttesterLiveCampaign, AttesterCampaign) {
+angular.module("attesterCampaignChooser", ["attesterLiveCampaign", "attesterCampaign"]).directive("campaignChooser", [
+        "$http", "AttesterLiveCampaign", "AttesterCampaign", function ($http, AttesterLiveCampaign, AttesterCampaign) {
 
-            var CampaignChooserController = ["$modalInstance", "config", function ($modalInstance, config) {
-                        this.serverURL = config.serverURL || "";
-                        this.reportURL = config.reportURL || "";
-                        this.sourceType = config.serverURL ? "serverURL" : config.reportURL ? "reportURL" : "serverURL";
+            return {
+                restrict : "E",
+                scope : {
+                    serverURL : "=serverUrl",
+                    reportURL : "=reportUrl",
+                    onSelect : "&"
+                },
+                templateUrl : "/campaignChooser/campaignChooser.html",
+                controllerAs : "ctrl",
+                controller : ["$scope", function ($scope) {
+                            this.serverURL = $scope.serverURL || "";
+                            this.reportURL = $scope.reportURL || "";
+                            this.sourceType = $scope.serverURL ? "serverURL" : $scope.reportURL
+                                    ? "reportURL"
+                                    : "serverURL";
 
-                        var processFile = function (file) {
-                            var sourceObject = {
-                                type : "file",
-                                file : file.name
+                            var processFile = function (file) {
+                                var sourceObject = {
+                                    type : "file",
+                                    file : file.name
+                                };
+                                var reader = new FileReader();
+                                reader.onload = function () {
+                                    var text = reader.result;
+                                    $scope.$apply(processReportContent.bind(null, sourceObject, text));
+                                };
+                                reader.readAsText(file);
+                                $scope.onSelect({
+                                    $source : sourceObject
+                                });
                             };
-                            var reader = new FileReader();
-                            reader.onload = function () {
-                                var text = reader.result;
-                                $rootScope.$apply(processReportContent.bind(null, sourceObject, text));
+
+                            var processServerURL = function (serverURL) {
+                                var liveCampaign = new AttesterLiveCampaign(serverURL);
+                                $scope.onSelect({
+                                    $source : liveCampaign
+                                });
                             };
-                            reader.readAsText(file);
-                            $modalInstance.close(sourceObject);
-                        };
 
-                        var processServerURL = function (serverURL) {
-                            var liveCampaign = new AttesterLiveCampaign(serverURL);
-                            $modalInstance.close(liveCampaign);
-                        };
-
-                        var processReportURL = function (reportURL) {
-                            var sourceObject = {
-                                type : "reportURL",
-                                reportURL : reportURL
+                            var processReportURL = function (reportURL) {
+                                var sourceObject = {
+                                    type : "reportURL",
+                                    reportURL : reportURL
+                                };
+                                $http({
+                                    url : reportURL,
+                                    method : "GET",
+                                    transformResponse : []
+                                }).success(function (data, status, headers, config) {
+                                    processReportContent(sourceObject, data);
+                                }).error(function (data) {
+                                    data = data || "";
+                                    sourceObject.error = "Error while downloading the report. " + data;
+                                });
+                                $scope.onSelect({
+                                    $source : sourceObject
+                                });
                             };
-                            $http({
-                                url : reportURL,
-                                method : "GET",
-                                transformResponse : []
-                            }).success(function (data, status, headers, config) {
-                                processReportContent(sourceObject, data);
-                            }).error(function (data) {
-                                data = data || "";
-                                sourceObject.error = "Error while downloading the report. " + data;
-                            });
-                            $modalInstance.close(sourceObject);
-                        };
 
-                        var processReportContent = function (sourceObject, sourceContent) {
-                            sourceContent = sourceContent.trim();
-                            if (sourceContent.charAt(sourceContent.length - 1) != ']') {
-                                sourceContent = sourceContent + ']';
-                            }
-                            try {
-                                var data = JSON.parse(sourceContent);
-                                var campaign = sourceObject.campaign = new AttesterCampaign();
-                                campaign.addEvents(data);
-                            } catch (e) {
-                                sourceObject.error = "Error while reading the report: " + e;
-                            }
-                        };
+                            var processReportContent = function (sourceObject, sourceContent) {
+                                sourceContent = sourceContent.trim();
+                                if (sourceContent.charAt(sourceContent.length - 1) != ']') {
+                                    sourceContent = sourceContent + ']';
+                                }
+                                try {
+                                    var data = JSON.parse(sourceContent);
+                                    var campaign = sourceObject.campaign = new AttesterCampaign();
+                                    campaign.addEvents(data);
+                                } catch (e) {
+                                    sourceObject.error = "Error while reading the report: " + e;
+                                }
+                            };
 
-                        this.drop = function (dataTransfer) {
-                            var file = dataTransfer.files[0];
-                            if (file) {
-                                processFile(file);
-                                return;
-                            }
-                            var url = dataTransfer.getData("URL");
-                            if (url) {
-                                processReportURL(url);
-                                return;
-                            }
-                        };
+                            this.drop = function (dataTransfer) {
+                                var file = dataTransfer.files[0];
+                                if (file) {
+                                    processFile(file);
+                                    return;
+                                }
+                                var url = dataTransfer.getData("URL");
+                                if (url) {
+                                    processReportURL(url);
+                                    return;
+                                }
+                            };
 
-                        this.submit = function () {
-                            var sourceType = this.sourceType;
-                            if (sourceType == "serverURL") {
-                                processServerURL(this.serverURL);
-                            } else if (sourceType == "reportURL") {
-                                processReportURL(this.reportURL);
-                            }
-                        };
-                    }];
-
-            return function (cfg) {
-                return $modal.open({
-                    templateUrl : "/campaignChooser/campaignChooser.html",
-                    controllerAs : "ctrl",
-                    controller : CampaignChooserController,
-                    resolve : {
-                        config : function () {
-                            return cfg || {};
-                        }
-                    },
-                    keyboard : false,
-                    backdrop : "static"
-                }).result;
+                            this.submit = function () {
+                                var sourceType = this.sourceType;
+                                if (sourceType == "serverURL") {
+                                    processServerURL(this.serverURL);
+                                } else if (sourceType == "reportURL") {
+                                    processReportURL(this.reportURL);
+                                }
+                            };
+                        }]
             };
         }]);

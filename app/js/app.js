@@ -17,16 +17,23 @@
     var app = angular.module("attester-ui", ["attesterTasksTable", "attesterCampaignChooser", "ui.bootstrap",
             "dragdrop"]);
 
-    app.controller("MainViewController", ["AttesterCampaignChooser", "$http", function (campaignChooser, $http) {
+    app.controller("MainViewController", ["$http", function ($http) {
                 var ctrl = this;
+
+                ctrl.sources = [];
+                ctrl.addSource = function (source) {
+                    ctrl.sources.push(source);
+                    source.active = true;
+                };
+                ctrl.removeSource = function (index) {
+                    var source = ctrl.sources[index];
+                    if (source.disconnect) {
+                        source.disconnect();
+                    }
+                    ctrl.sources.splice(index, 1);
+                };
                 $http.get("/config.json").success(function (config) {
                     ctrl.config = config;
-                    var res = campaignChooser({
-                        serverURL : config.serverURL,
-                        reportURL : config.reportURL
-                    }).then(function (source) {
-                        ctrl.source = source;
-                    });
                 });
             }]);
 })();

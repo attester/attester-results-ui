@@ -14,24 +14,63 @@
  */
 
 (function () {
-    var app = angular.module("attester-ui", ["attesterTasksTable", "attesterCampaignChooser", "ui.bootstrap",
-            "dragdrop"]);
+    var app = angular.module("attester-ui", ["attesterTasksTable", "attesterCampaignChooser",
+            "attesterCompareCampaignsSelector", "ui.bootstrap", "dragdrop"]);
+
+    var sameArray = function (array1, array2) {
+        var l = array1.length;
+        if (l !== array2.length) {
+            return false;
+        }
+        for (var i = 0; i < l; i++) {
+            if (array1[i] !== array2[i]) {
+                return false;
+            }
+        }
+        return true;
+    };
 
     app.controller("MainViewController", ["$http", function ($http) {
                 var ctrl = this;
 
-                ctrl.sources = [];
+                var sources = ctrl.sources = [];
                 ctrl.addSource = function (source) {
-                    ctrl.sources.push(source);
+                    sources.push(source);
                     source.active = true;
                 };
                 ctrl.removeSource = function (index) {
-                    var source = ctrl.sources[index];
+                    var source = sources[index];
                     if (source.disconnect) {
                         source.disconnect();
                     }
-                    ctrl.sources.splice(index, 1);
+                    sources.splice(index, 1);
                 };
+                var comparators = ctrl.comparators = [];
+                ctrl.addComparator = function (comparator) {
+                    comparators.push(comparator);
+                    comparator.active = true;
+                };
+                ctrl.removeComparator = function (index) {
+                    comparators.splice(index, 1);
+                };
+
+                var previouslyLoadedCampaigns = [];
+                ctrl.getLoadedCampaigns = function () {
+                    var campaigns = [];
+                    for (var i = 0, l = sources.length; i < l; i++) {
+                        var curCampaign = sources[i].campaign;
+                        if (curCampaign && curCampaign.campaignId) {
+                            campaigns.push(curCampaign);
+                        }
+                    }
+                    // returns the same array as before if it did not change
+                    // (for the stability of the data model)
+                    if (!sameArray(previouslyLoadedCampaigns, campaigns)) {
+                        previouslyLoadedCampaigns = campaigns;
+                    }
+                    return previouslyLoadedCampaigns;
+                };
+
                 $http.get("/config.json").success(function (config) {
                     ctrl.config = config;
                 });

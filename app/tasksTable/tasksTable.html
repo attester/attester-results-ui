@@ -30,8 +30,7 @@
 <table class="table table-bordered table-hover">
 	<thead>
 		<tr>
-			<th colspan="2">Test <span class="pull-right"> <span
-					class="badge">{{ctrl.tasksNumber}}</span>
+			<th>Test <span class="pull-right"> <span class="badge">{{ctrl.tasksNumber}}</span>
 					<button type="button" class="btn btn-default btn-xs"
 						title="Export this list of {{ctrl.tasksNumber}} test(s)"
 						ng-click="ctrl.exportTasks()">
@@ -39,11 +38,16 @@
 					</button>
 			</span>
 			</th>
-			<th ng-repeat="browser in browsersArray">{{browser.name}}</th>
+			<th ng-repeat="header in ctrl.getCampaignHeaders()"
+				colspan="{{header.colspan}}">Campaign
+				{{header.campaign.campaignId}}</th>
 		</tr>
 		<tr>
 			<td><input type="text" class="form-control input-sm"
 				placeholder="Filter tests" ng-model="ctrl.filterTestName"></td>
+			<th ng-repeat="browser in browsersArray">{{browser.name}}</th>
+		</tr>
+		<tr>
 			<td class="task-result"><span
 				ng-class="ctrl.getFilterAllClass('success')"
 				ng-click="ctrl.toggleFilterAll('success')"></span> <span
@@ -67,9 +71,8 @@
 	<tbody>
 		<tr ng-repeat="task in ctrl.getDisplayedTasks()"
 			ng-class="ctrl.getTRClass(task)">
-			<td colspan="2">{{task.name}} <a
-				ng-href="{{ctrl.getTaskLink(task)}}" ng-if="testURL"
-				ng-click="$event.preventDefault()"><span
+			<td>{{task.name}} <a ng-href="{{ctrl.getTaskLink(task)}}"
+				ng-if="testURL" ng-click="$event.preventDefault()"><span
 					class="glyphicon glyphicon-link"></span></a></td>
 			<td ng-repeat="browser in browsersArray"
 				ng-click="ctrl.taskClick(task, browser)" class="task-result"><span

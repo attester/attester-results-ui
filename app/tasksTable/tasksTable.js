@@ -17,6 +17,21 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
         "attesterTaskInfoModal", "AttesterExecutionStates", "exportFile",
         function (attesterTaskInfoModal, executionStates, exportFile) {
 
+            var sameCampaignHeaders = function (array1, array2) {
+                var l = array1.length;
+                if (l != array2.length) {
+                    return false;
+                }
+                for (var i = 0; i < l; i++) {
+                    var elt1 = array1[i];
+                    var elt2 = array2[i];
+                    if (elt1.campaign != elt2.campaign || elt1.colspan != elt2.colspan) {
+                        return false;
+                    }
+                }
+                return true;
+            };
+
             return {
                 restrict : "E",
                 templateUrl : "/tasksTable/tasksTable.html",
@@ -174,6 +189,29 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
 
                     this.getTaskLink = function (task) {
                         return $scope.testURL + encodeURIComponent(task.name);
+                    };
+
+                    var previousCampaignHeaders = [];
+                    this.getCampaignHeaders = function () {
+                        var res = [];
+                        var currentCampaign = null;
+                        var currentHeader = null;
+                        $scope.browsersArray.forEach(function (browser) {
+                            if (browser.campaign == currentCampaign) {
+                                currentHeader.colspan++;
+                                return;
+                            }
+                            currentCampaign = browser.campaign;
+                            currentHeader = {
+                                campaign : currentCampaign,
+                                colspan : 1
+                            };
+                            res.push(currentHeader);
+                        });
+                        if (!sameCampaignHeaders(res, previousCampaignHeaders)) {
+                            previousCampaignHeaders = res;
+                        }
+                        return previousCampaignHeaders;
                     };
 
                     this.exportTasks = function () {

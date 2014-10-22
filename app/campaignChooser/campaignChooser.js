@@ -90,9 +90,11 @@ angular.module("attesterCampaignChooser", ["attesterLiveCampaign", "attesterCamp
                             };
 
                             this.drop = function (dataTransfer) {
-                                var file = dataTransfer.files[0];
-                                if (file) {
-                                    processFile(file);
+                                var files = dataTransfer.files;
+                                if (files && files.length > 0) {
+                                    for (var i = 0, l = files.length; i < l; i++) {
+                                        processFile(files[i]);
+                                    }
                                     return;
                                 }
                                 var url = dataTransfer.getData("URL");

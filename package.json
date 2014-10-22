@@ -1,7 +1,7 @@
 {
-    "name" : "attester-angular-ui",
+    "name" : "attester-results-ui",
     "version" : "0.0.1",
-    "description" : "AngularJS-based user interface to display attester test results.",
+    "description" : "Web-based user interface to display attester test results.",
     "author" : "ariatemplates <contact@ariatemplates.com> (http://github.com/ariatemplates)",
     "license" : "Apache-2.0",
     "dependencies" : {
@@ -12,6 +12,6 @@
         "start" : "node cli.js"
     },
     "bin" : {
-        "attester-angular-ui" : "bin/attester-angular-ui.js"
+        "attester-results-ui" : "bin/attester-results-ui.js"
     }
 }

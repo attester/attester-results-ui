@@ -34,10 +34,10 @@ var optimist = require("optimist").usage("$0").options({
 });
 
 var argv = optimist.argv;
-var attesterAngularUI = require("./index");
+var attesterResultsUI = require("./index");
 
 var main = function () {
-    var app = attesterAngularUI({
+    var app = attesterResultsUI({
         testURL : argv["test-url"],
         serverURL : argv["server-url"],
         reportURL : argv["report-url"]

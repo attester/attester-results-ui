@@ -22,7 +22,7 @@ angular.module("attesterCompareCampaignsSelector", ["attesterCampaignsComparator
                     campaigns : "=",
                     onSelect : "&"
                 },
-                templateUrl : "/compareCampaignsSelector/compareCampaignsSelector.html",
+                templateUrl : "compareCampaignsSelector/compareCampaignsSelector.html",
                 controllerAs : "ctrl",
                 controller : ["$scope", function ($scope) {
                             this.selectedBrowsers = [];

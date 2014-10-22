@@ -23,7 +23,7 @@ angular.module("attesterCampaignChooser", ["attesterLiveCampaign", "attesterCamp
                     reportURL : "=reportUrl",
                     onSelect : "&"
                 },
-                templateUrl : "/campaignChooser/campaignChooser.html",
+                templateUrl : "campaignChooser/campaignChooser.html",
                 controllerAs : "ctrl",
                 controller : ["$scope", function ($scope) {
                             this.serverURL = $scope.serverURL || "";

@@ -16,34 +16,32 @@
 <html ng-app="attester-ui">
 <head>
 <title>Attester</title>
-<link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css">
-<link rel="stylesheet" href="/general.css">
-<link rel="stylesheet" href="/testsDetails/testsDetails.css">
-<link rel="stylesheet" href="/executionStates/executionStates.css">
-<link rel="stylesheet" href="/tasksTable/tasksTable.css">
+<link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" href="general.css">
+<link rel="stylesheet" href="testsDetails/testsDetails.css">
+<link rel="stylesheet" href="executionStates/executionStates.css">
+<link rel="stylesheet" href="tasksTable/tasksTable.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-	<script src="/lib/socket.io-1.1.0.js"></script>
-	<script type="text/javascript" src="/lib/angular.min.js"></script>
+	<script src="lib/socket.io-1.1.0.js"></script>
+	<script type="text/javascript" src="lib/angular.min.js"></script>
 	<script type="text/javascript"
-		src="/lib/ui-bootstrap-tpls-0.11.2.min.js"></script>
-	<script type="text/javascript" src="/js/exportFile.js"></script>
-	<script type="text/javascript" src="/js/dragdrop.js"></script>
-	<script type="text/javascript" src="/js/app.js"></script>
-	<script type="text/javascript" src="/js/campaign.js"></script>
-	<script type="text/javascript" src="/js/comparator.js"></script>
-	<script type="text/javascript" src="/js/liveCampaign.js"></script>
+		src="lib/ui-bootstrap-tpls-0.11.2.min.js"></script>
+	<script type="text/javascript" src="js/exportFile.js"></script>
+	<script type="text/javascript" src="js/dragdrop.js"></script>
+	<script type="text/javascript" src="js/app.js"></script>
+	<script type="text/javascript" src="js/campaign.js"></script>
+	<script type="text/javascript" src="js/comparator.js"></script>
+	<script type="text/javascript" src="js/liveCampaign.js"></script>
+	<script type="text/javascript" src="executionStates/executionStates.js"></script>
+	<script type="text/javascript" src="testsDetails/testsDetails.js"></script>
+	<script type="text/javascript" src="taskInfo/taskInfo.js"></script>
+	<script type="text/javascript" src="taskInfo/taskInfoModal.js"></script>
+	<script type="text/javascript" src="tasksTable/tasksTable.js"></script>
+	<script type="text/javascript" src="campaignChooser/campaignChooser.js"></script>
 	<script type="text/javascript"
-		src="/executionStates/executionStates.js"></script>
-	<script type="text/javascript" src="/testsDetails/testsDetails.js"></script>
-	<script type="text/javascript" src="/taskInfo/taskInfo.js"></script>
-	<script type="text/javascript" src="/taskInfo/taskInfoModal.js"></script>
-	<script type="text/javascript" src="/tasksTable/tasksTable.js"></script>
-	<script type="text/javascript"
-		src="/campaignChooser/campaignChooser.js"></script>
-	<script type="text/javascript"
-		src="/compareCampaignsSelector/compareCampaignsSelector.js"></script>
+		src="compareCampaignsSelector/compareCampaignsSelector.js"></script>
 	<div class="container-fluid"
 		ng-controller="MainViewController as mainCtrl">
 		<h1>Attester results</h1>
@@ -71,10 +69,10 @@
 			</div>
 		</div>
 		<tabset ng-if="mainCtrl.config"> <tab
-			ng-repeat="source in mainCtrl.sources" active="source.active"> <tab-heading>
-		<span ng-if="source.campaign.campaignId">{{source.campaign.campaignId}} </span>
-		<span ng-if="!source.campaign.campaignId">Loading...</span>
-		&nbsp;<button type="button" class="close"
+			ng-repeat="source in mainCtrl.sources" active="source.active">
+		<tab-heading> <span ng-if="source.campaign.campaignId">{{source.campaign.campaignId}}
+		</span> <span ng-if="!source.campaign.campaignId">Loading...</span> &nbsp;
+		<button type="button" class="close"
 			ng-click="mainCtrl.removeSource($index)">
 			<span>&times;</span>
 		</button>

@@ -18,7 +18,7 @@ angular.module("attesterTaskInfo", ["attesterExecutionStates", "attesterTestsDet
 
             return {
                 restrict : "E",
-                templateUrl : "/taskInfo/taskInfo.html",
+                templateUrl : "taskInfo/taskInfo.html",
                 scope : {
                     task : "=",
                     campaign : "="

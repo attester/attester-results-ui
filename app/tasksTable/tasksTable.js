@@ -34,7 +34,7 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
 
             return {
                 restrict : "E",
-                templateUrl : "/tasksTable/tasksTable.html",
+                templateUrl : "tasksTable/tasksTable.html",
                 scope : {
                     browsersArray : "=",
                     browsersMap : "=",

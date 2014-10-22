@@ -32,7 +32,7 @@ angular.module("attesterTestsDetails", []).directive("testsDetails", ["$compile"
 
             return {
                 restrict : "E",
-                templateUrl : "/testsDetails/testsDetails.html",
+                templateUrl : "testsDetails/testsDetails.html",
                 scope : {
                     tests : "=",
                     taskExecution : "=",

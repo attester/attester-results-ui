@@ -1,6 +1,5 @@
-#!/usr/bin/env node
 /*
- * Copyright 2012 Amadeus s.a.s.
+ * Copyright 2014 Amadeus s.a.s.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,4 +13,14 @@
  * limitations under the License.
  */
 
-require("../cli");
+var path = require("path");
+var express = require("express");
+
+module.exports = function (config) {
+    var app = express();
+    app.use("/", express.static(path.join(__dirname, "app")));
+    app.get("/config.json", function (req, res) {
+        res.json(config);
+    });
+    return app;
+};

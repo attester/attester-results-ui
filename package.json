@@ -9,7 +9,7 @@
         "optimist" : "^0.6.1"
     },
     "scripts" : {
-        "start" : "node start.js"
+        "start" : "node cli.js"
     },
     "bin" : {
         "attester-angular-ui" : "bin/attester-angular-ui.js"

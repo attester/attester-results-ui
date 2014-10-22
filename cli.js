@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Amadeus s.a.s.
+ * Copyright 2014 Amadeus s.a.s.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,8 +13,6 @@
  * limitations under the License.
  */
 
-var path = require("path");
-var express = require("express");
 var optimist = require("optimist").usage("$0").options({
     "help" : {
         description : "Displays this help message and exits."
@@ -36,18 +34,13 @@ var optimist = require("optimist").usage("$0").options({
 });
 
 var argv = optimist.argv;
+var attesterAngularUI = require("./index");
 
 var main = function () {
-    var app = express();
-    var config = {
+    var app = attesterAngularUI({
         testURL : argv["test-url"],
         serverURL : argv["server-url"],
         reportURL : argv["report-url"]
-    };
-
-    app.use("/", express.static(path.join(__dirname, "app")));
-    app.get("/config.json", function (req, res) {
-        res.json(config);
     });
 
     var port = argv.port;

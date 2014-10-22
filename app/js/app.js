@@ -71,7 +71,7 @@
                     return previouslyLoadedCampaigns;
                 };
 
-                $http.get("/config.json").success(function (config) {
+                $http.get("config.json").success(function (config) {
                     ctrl.config = config;
                 });
             }]);

@@ -22,7 +22,7 @@ angular.module("attesterTaskInfoModal", ["attesterTaskInfo"]).factory("attesterT
 
             return function (config) {
                 $modal.open({
-                    templateUrl : '/taskInfo/taskInfoModal.html',
+                    templateUrl : 'taskInfo/taskInfoModal.html',
                     controllerAs : "ctrl",
                     controller : taskInfoModalController,
                     resolve : {

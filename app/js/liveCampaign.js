@@ -79,6 +79,9 @@ angular.module("attesterLiveCampaign", ["attesterCampaign"]).factory("AttesterLi
                 };
 
                 var connect = function () {
+                    if (!socket) {
+                        return;
+                    }
                     resetManagers();
                     socket = io(serverAddress, {
                         reconnection : false
@@ -102,6 +105,7 @@ angular.module("attesterLiveCampaign", ["attesterCampaign"]).factory("AttesterLi
                     }
                 };
 
+                socket = true;
                 connect();
             };
             return AttesterLiveCampaign;

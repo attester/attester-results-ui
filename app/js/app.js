@@ -72,6 +72,12 @@
                 };
 
                 $http.get("config.json").success(function (config) {
+                    for (var key in config) {
+                        var item = config[key];
+                        if (/URL$/.test(key) && config.hasOwnProperty(key) && (typeof item) == "string") {
+                            config[key] = item.replace(/^\{CURRENTHOST\}/, location.protocol + '//' + location.host);
+                        }
+                    }
                     ctrl.config = config;
                 });
             }]);

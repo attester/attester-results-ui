@@ -44,12 +44,8 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
         return browser;
     };
 
-    var initLeafTask = function (parentTask, task) {
-        task.lastExecution = {
-            state : "waiting"
-        };
-        task.executions = [task.lastExecution];
-        var taskName = task.name;
+    var initLeafTask = function (parentTask, taskDef) {
+        var taskName = taskDef.name;
         var browserName = "default";
         var taskGroup = {
             name : taskName
@@ -62,9 +58,17 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
                 taskGroup = parentTask;
             }
         }
-        task.browser = getBrowser.call(this, browserName);
+        var lastExecution = {
+            state : "waiting"
+        };
+        var task = {
+            name : taskName,
+            browser : getBrowser.call(this, browserName),
+            taskGroup : taskGroup,
+            lastExecution : lastExecution,
+            executions : [lastExecution]
+        };
         var browserKey = task.browser.browserKey;
-        task.taskGroup = taskGroup;
         var taskGroupBrowsers = taskGroup.browsers;
         if (!taskGroupBrowsers) {
             taskGroupBrowsers = taskGroup.browsers = {};
@@ -75,12 +79,17 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
         } else {
             taskGroupBrowsers[browserKey] = task;
         }
+        return task;
     };
 
     var processTask = function (parentTask, task) {
         var subTasks = task.subTasks;
         if (subTasks) {
-            subTasks.forEach(processTask.bind(this, task));
+            subTasks.forEach(processTask.bind(this, {
+                // pass a copy of the parent task, so that it can be modified,
+                // and the original event is not changed
+                name : task.name
+            }));
         }
         var taskId = task.taskId;
         if (taskId != null) {
@@ -88,8 +97,7 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
             if (tasksMap[taskId]) {
                 console.error("Duplicate task id: " + taskId);
             } else {
-                tasksMap[taskId] = task;
-                initLeafTask.call(this, parentTask, task);
+                tasksMap[taskId] = initLeafTask.call(this, parentTask, task);
             }
         }
     };

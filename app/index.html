@@ -78,6 +78,12 @@
 		</button>
 		</tab-heading>
 		<div class="space"></div>
+		<button ng-if="source.campaign"
+			class="pull-right btn btn-default btn-xs"
+			ng-click="mainCtrl.saveLogs(source.campaign)"
+			title="Save this campaign's results">
+			<span class="glyphicon glyphicon-save"></span>
+		</button>
 		<div ng-switch="source.type">
 			<dl class="dl-horizontal" ng-switch-when="serverURL">
 				<dt>Attester server URL</dt>

@@ -15,7 +15,7 @@
 
 (function () {
     var app = angular.module("attester-ui", ["attesterTasksTable", "attesterCampaignChooser",
-            "attesterCompareCampaignsSelector", "ui.bootstrap", "dragdrop"]);
+            "attesterCompareCampaignsSelector", "ui.bootstrap", "dragdrop", "exportFile"]);
 
     var sameArray = function (array1, array2) {
         var l = array1.length;
@@ -30,7 +30,7 @@
         return true;
     };
 
-    app.controller("MainViewController", ["$http", function ($http) {
+    app.controller("MainViewController", ["$http", "exportFile", function ($http, exportFile) {
                 var ctrl = this;
 
                 var sources = ctrl.sources = [];
@@ -52,6 +52,13 @@
                 };
                 ctrl.removeComparator = function (index) {
                     comparators.splice(index, 1);
+                };
+
+                ctrl.saveLogs = function (campaign) {
+                    var content = JSON.stringify(campaign.events);
+                    exportFile([content], {
+                        type : "application/json"
+                    }, "Campaign " + (campaign.campaignId || "") + ".json");
                 };
 
                 var previouslyLoadedCampaigns = [];

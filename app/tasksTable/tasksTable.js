@@ -39,7 +39,7 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                     browsersArray : "=",
                     browsersMap : "=",
                     tasksGroups : "=",
-                    testURL : "="
+                    testURL : "=testUrl"
                 },
                 controllerAs : "ctrl",
                 controller : ["$scope", function ($scope) {

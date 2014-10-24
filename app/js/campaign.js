@@ -27,6 +27,8 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
         this.tasksGroups = null;
         this.browsersArray = null;
         this.browsersMap = null;
+        this.slavesMap = null;
+        this.slavesArray = null;
         this.lastUpdate = null;
     };
 
@@ -37,7 +39,8 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
             browser = this.browsersMap[browserKey] = {
                 name : browserName,
                 campaign : this,
-                browserKey : browserKey
+                browserKey : browserKey,
+                slaves : {}
             };
             this.browsersArray.push(browser);
         }
@@ -59,7 +62,8 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
             }
         }
         var lastExecution = {
-            state : "waiting"
+            state : "waiting",
+            indexInTask : 0
         };
         var task = {
             name : taskName,
@@ -68,6 +72,7 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
             lastExecution : lastExecution,
             executions : [lastExecution]
         };
+        lastExecution.task = task;
         var browserKey = task.browser.browserKey;
         var taskGroupBrowsers = taskGroup.browsers;
         if (!taskGroupBrowsers) {
@@ -156,6 +161,25 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
         return task.lastExecution;
     };
 
+    var getSlave = function (slaveInfo) {
+        var slaveKey = slaveInfo.address + ":" + slaveInfo.port + ":" + slaveInfo.userAgent;
+        var slave = this.slavesMap[slaveKey];
+        if (!slave) {
+            slave = this.slavesMap[slaveKey] = {
+                slaveKey : slaveKey,
+                address : slaveInfo.address,
+                port : slaveInfo.port,
+                userAgent : slaveInfo.userAgent,
+                executions : []
+            };
+            this.slavesArray.push(slave);
+        }
+        if (slaveInfo.addressName && !slave.addressName) {
+            slave.addressName = slaveInfo.addressName;
+        }
+        return slave;
+    };
+
     var processEvents = {
         "tasksList" : function (event) {
             this.campaignId = event.campaignId;
@@ -163,6 +187,8 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
             this.browsersMap = {};
             this.tasksGroups = [];
             this.tasksMap = {};
+            this.slavesMap = {};
+            this.slavesArray = [];
             var tasks = event.tasks;
             this.tasksTree = tasks;
             tasks.forEach(processTask.bind(this, null));
@@ -177,7 +203,19 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
             }
         },
         "taskStarted" : function (event) {
-            storeTaskStateChangingEvent.call(this, event, "started");
+            var task = storeTaskStateChangingEvent.call(this, event, "started");
+            if (!task) {
+                return;
+            }
+            var lastExecution = task.lastExecution;
+            var slave = getSlave.call(this, event.slave);
+            if (!task.browser.slaves[slave.slaveKey]) {
+                task.browser.slaves[slave.slaveKey] = slave;
+            }
+            var indexInSlave = slave.executions.length;
+            slave.executions[indexInSlave] = lastExecution;
+            lastExecution.slave = slave;
+            lastExecution.indexInSlave = indexInSlave;
         },
         "taskIgnored" : function (event) {
             storeTaskStateChangingEvent.call(this, event, "ignored");
@@ -188,10 +226,13 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
                 return;
             }
             if (event.restartPlanned) {
+                var indexInTask = task.executions.length;
                 task.lastExecution = {
-                    state : "waiting"
+                    state : "waiting",
+                    task : task,
+                    indexInTask : indexInTask
                 };
-                task.executions.push(task.lastExecution);
+                task.executions[indexInTask] = task.lastExecution;
             }
         },
         "error" : function (event) {

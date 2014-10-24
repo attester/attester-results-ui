@@ -29,7 +29,7 @@ angular.module("attesterTaskInfo", ["attesterExecutionStates", "attesterTestsDet
 
                     this.getSlaveAddress = function (execution) {
                         var res = [];
-                        var slave = execution.started.slave;
+                        var slave = execution.slave;
                         if (slave.addressName) {
                             res.push(slave.addressName, ":", slave.port, " (", slave.address, ")");
                         } else {

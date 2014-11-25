@@ -25,7 +25,7 @@ angular.module("attesterTaskInfo", ["attesterExecutionStates", "attesterTestsDet
                 },
                 controllerAs : "ctrl",
                 controller : ["$scope", function ($scope) {
-                    this.currentExecution = $scope.task.lastExecution;
+                    this.currentExecution = executionStates.getExecution($scope.task);
 
                     this.getSlaveAddress = function (execution) {
                         var res = [];

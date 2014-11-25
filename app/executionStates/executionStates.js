@@ -46,20 +46,40 @@ angular.module("attesterExecutionStates", []).factory("AttesterExecutionStates",
     };
 
     var getExecution = function (browserTask) {
-        return browserTask ? browserTask.lastExecution : {
-            ignored : true
-        };
+        if (!browserTask) {
+            return {
+                ignored : true
+            };
+        }
+        var lastExecution = browserTask.lastExecution;
+        var executionsLength = browserTask.executions.length;
+        if (executionsLength > 1 && getExecutionState(lastExecution) == "waiting") {
+            lastExecution = browserTask.executions[executionsLength - 2];
+        }
+        return lastExecution;
     };
 
     return {
         getStateIcon : getStateIcon,
+        getExecution : getExecution,
         getExecutionState : getExecutionState,
         getExecutionIcon : getExecutionIcon,
         getTaskState : function (browserTask) {
             return getExecutionState(getExecution(browserTask));
         },
         getTaskIcon : function (browserTask) {
-            return getExecutionIcon(getExecution(browserTask));
+            var res = getExecutionIcon(getExecution(browserTask));
+            if (browserTask && browserTask.executions.length > 1) {
+                var lastExecution = browserTask.lastExecution;
+                var lastExecutionState = getExecutionState(lastExecution);
+                if (lastExecutionState == "waiting") {
+                    res += " task-not-definitive";
+                }
+                if (lastExecution.started && !lastExecution.finished) {
+                    res += " task-running";
+                }
+            }
+            return res;
         }
     };
 });

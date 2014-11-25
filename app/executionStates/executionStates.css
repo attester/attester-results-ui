@@ -35,6 +35,10 @@
 	color: red;
 }
 
+.task-not-definitive {
+	opacity: 0.5;
+}
+
 @keyframes blink {
 	0% {opacity: 1;}
 	50% {opacity: 0;}

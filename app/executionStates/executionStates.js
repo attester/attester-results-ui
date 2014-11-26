@@ -78,6 +78,7 @@ angular.module("attesterExecutionStates", []).factory("AttesterExecutionStates",
                 if (lastExecution.started && !lastExecution.finished) {
                     res += " task-running";
                 }
+                res += " task-multi-executions";
             }
             return res;
         }

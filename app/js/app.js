@@ -84,6 +84,11 @@
                         if (/URL$/.test(key) && config.hasOwnProperty(key) && (typeof item) == "string") {
                             config[key] = item.replace(/^\{CURRENTHOST\}/, location.protocol + '//' + location.host);
                         }
+                        if (/URLs$/.test(key) && config.hasOwnProperty(key) && item && item.length > 0) {
+                            config[key] = item.map(function (url) {
+                                return url.replace(/^\{CURRENTHOST\}/, location.protocol + '//' + location.host)
+                            });
+                        }
                     }
                     ctrl.config = config;
                 });

@@ -30,21 +30,43 @@ var optimist = require("optimist").usage("$0").options({
     },
     "test-url" : {
         description : "String to prepend to the name of the test to build the test URLs."
+    },
+    "reports-directory" : {
+        description : "Directory containing reports, to be published on the web server under /reports, whose *.json files will be presented as report URLs."
     }
 });
 
+var path = require("path");
+var express = require("express");
+var glob = require("glob");
 var argv = optimist.argv;
 var attesterResultsUI = require("./index");
 
 var main = function () {
+    var reportsDirectory = argv["reports-directory"];
+    var reportsURLs = [];
+    if (reportsDirectory) {
+        reportsDirectory = path.resolve(reportsDirectory);
+        reportsURLs = reportsURLs.concat(glob.sync("**/*.json", {
+            cwd : reportsDirectory
+        }).map(function (result) {
+            return "{CURRENTHOST}/reports/" + encodeURI(result.replace(/\\/g, "/"));
+        }));
+    }
+
     var app = attesterResultsUI({
         testURL : argv["test-url"],
         serverURL : argv["server-url"],
-        reportURL : argv["report-url"]
+        reportURL : argv["report-url"],
+        reportURLs : reportsURLs
     });
 
     var port = argv.port;
     var server;
+
+    if (reportsDirectory) {
+        app.use("/reports", express.static(reportsDirectory));
+    }
 
     var startServer = function (port) {
         server = app.listen(port);

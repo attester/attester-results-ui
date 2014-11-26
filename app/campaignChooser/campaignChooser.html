@@ -24,8 +24,8 @@
 		<div class="form-group">
 			<label class="col-sm-4 control-label">Live server URL</label>
 			<div class="col-sm-5">
-				<input type="url" class="form-control" ng-model="ctrl.serverURL"
-					required>
+				<text-field-suggestions model="ctrl.serverURL"
+					suggestions="ctrl.serverURLs"></text-field-suggestions>
 			</div>
 			<div class="col-sm-1">
 				<button type="button" class="btn btn-primary"
@@ -40,8 +40,8 @@
 		<div class="form-group">
 			<label class="col-sm-4 control-label">Recorded report URL</label>
 			<div class="col-sm-5">
-				<input type="url" class="form-control" ng-model="ctrl.reportURL"
-					required>
+				<text-field-suggestions model="ctrl.reportURL"
+					suggestions="ctrl.reportURLs"></text-field-suggestions>
 			</div>
 			<div class="col-sm-1">
 				<button type="button" class="btn btn-primary"

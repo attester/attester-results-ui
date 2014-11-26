@@ -13,14 +13,16 @@
  * limitations under the License.
  */
 
-angular.module("attesterCampaignChooser", ["attesterLiveCampaign", "attesterCampaign"]).directive("campaignChooser", [
+angular.module("attesterCampaignChooser", ["attesterLiveCampaign", "attesterCampaign", "textFieldSuggestions"]).directive("campaignChooser", [
         "$http", "AttesterLiveCampaign", "AttesterCampaign", function ($http, AttesterLiveCampaign, AttesterCampaign) {
 
             return {
                 restrict : "E",
                 scope : {
                     serverURL : "=serverUrl",
+                    serverURLs : "=serverUrls",
                     reportURL : "=reportUrl",
+                    reportURLs : "=reportUrls",
                     onSelect : "&"
                 },
                 templateUrl : "campaignChooser/campaignChooser.html",
@@ -28,6 +30,8 @@ angular.module("attesterCampaignChooser", ["attesterLiveCampaign", "attesterCamp
                 controller : ["$scope", function ($scope) {
                             this.serverURL = $scope.serverURL || "";
                             this.reportURL = $scope.reportURL || "";
+                            this.serverURLs = $scope.serverURLs || [];
+                            this.reportURLs = $scope.reportURLs || [];
 
                             var processFile = function (file) {
                                 var sourceObject = {

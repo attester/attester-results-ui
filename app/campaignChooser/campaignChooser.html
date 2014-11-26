@@ -15,44 +15,43 @@
 <h3>
 	<span class="glyphicon glyphicon-chevron-right"></span> Open a campaign
 </h3>
-<form class="form-horizontal" role="form" name="form"
-	ng-submit="ctrl.submit()" drop="ctrl.drop($dataTransfer)"
-	drop-variable="ctrl.dropping" novalidate>
+<div drop="ctrl.drop($dataTransfer)" drop-variable="ctrl.dropping">
 	<div class="alert alert-info" ng-if="ctrl.dropping">Drop this
 		item here to open it.</div>
-	<div class="form-group">
-		<label class="col-sm-4 control-label">Source</label>
-		<div class="col-sm-4">
-			<div class="radio">
-				<label><input type="radio" value="serverURL"
-					ng-model="ctrl.sourceType"> Live attester server </label>
-			</div>
-			<div class="radio">
-				<label><input type="radio" value="reportURL"
-					ng-model="ctrl.sourceType"> Recorded attester log </label>
-			</div>
-			<div class="radio" ng-hide="ctrl.dropping">Tip: drop an
-				attester log json file or a link to such a file here to open it.</div>
-		</div>
-	</div>
 
-	<div class="form-group" ng-if="ctrl.sourceType == 'serverURL'">
-		<label class="col-sm-4 control-label">Server URL</label>
-		<div class="col-sm-4">
-			<input type="url" class="form-control" ng-model="ctrl.serverURL"
-				required>
+	<form class="form-horizontal" role="formLiveServer"
+		name="formLiveServer" ng-submit="ctrl.submitLiveServer()" novalidate>
+		<div class="form-group">
+			<label class="col-sm-4 control-label">Live server URL</label>
+			<div class="col-sm-5">
+				<input type="url" class="form-control" ng-model="ctrl.serverURL"
+					required>
+			</div>
+			<div class="col-sm-1">
+				<button type="button" class="btn btn-primary"
+					ng-click="formLiveServer.$valid && ctrl.submitLiveServer()"
+					ng-disabled="formLiveServer.$invalid">OK</button>
+			</div>
 		</div>
-	</div>
+	</form>
 
-	<div class="form-group" ng-if="ctrl.sourceType == 'reportURL'">
-		<label class="col-sm-4 control-label">Report URL</label>
-		<div class="col-sm-4">
-			<input type="url" class="form-control" ng-model="ctrl.reportURL"
-				required>
+	<form class="form-horizontal" role="formRecordedLog"
+		name="formRecordedLog" ng-submit="ctrl.submitRecordedLog()" novalidate>
+		<div class="form-group">
+			<label class="col-sm-4 control-label">Recorded report URL</label>
+			<div class="col-sm-5">
+				<input type="url" class="form-control" ng-model="ctrl.reportURL"
+					required>
+			</div>
+			<div class="col-sm-1">
+				<button type="button" class="btn btn-primary"
+					ng-click="formRecordedLog.$valid && ctrl.submitRecordedLog()"
+					ng-disabled="formRecordedLog.$invalid">OK</button>
+			</div>
 		</div>
-	</div>
-	<div class="text-center">
-		<button type="button" class="btn btn-primary"
-			ng-click="form.$valid && ctrl.submit()" ng-disabled="form.$invalid">OK</button>
-	</div>
-</form>
+	</form>
+
+	<div class="text-center" ng-hide="ctrl.dropping">Tip: drop an
+		attester log json file or a link to such a file here to open it.</div>
+
+</div>

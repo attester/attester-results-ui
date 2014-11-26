@@ -28,9 +28,6 @@ angular.module("attesterCampaignChooser", ["attesterLiveCampaign", "attesterCamp
                 controller : ["$scope", function ($scope) {
                             this.serverURL = $scope.serverURL || "";
                             this.reportURL = $scope.reportURL || "";
-                            this.sourceType = $scope.serverURL ? "serverURL" : $scope.reportURL
-                                    ? "reportURL"
-                                    : "serverURL";
 
                             var processFile = function (file) {
                                 var sourceObject = {
@@ -104,13 +101,12 @@ angular.module("attesterCampaignChooser", ["attesterLiveCampaign", "attesterCamp
                                 }
                             };
 
-                            this.submit = function () {
-                                var sourceType = this.sourceType;
-                                if (sourceType == "serverURL") {
-                                    processServerURL(this.serverURL);
-                                } else if (sourceType == "reportURL") {
-                                    processReportURL(this.reportURL);
-                                }
+                            this.submitLiveServer = function () {
+                                processServerURL(this.serverURL);
+                            };
+
+                            this.submitRecordedLog = function () {
+                                processReportURL(this.reportURL);
                             };
                         }]
             };

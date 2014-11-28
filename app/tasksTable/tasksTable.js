@@ -47,9 +47,73 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                     this.filterTestState = null;
                     this.filterAll = false;
                     this.filteredBrowsers = null;
+                    this.displayInfo = "result";
                     this.tasksNumber = 0;
                     this.pageSize = 10;
                     this.currentPage = 1;
+                    this.currentSortOrder = null;
+                    this.sortOrders = [];
+
+                    this.setSortOrder = function (selectedBrowser, sortOrder, event) {
+                        if (event) {
+                            event.preventDefault();
+                            event = null;
+                        }
+                        if (!sortOrder) {
+                            var displayInfo = this.displayInfo;
+                            sortOrder = this.sortOrders.filter(function (sortOrder) {
+                                return sortOrder.displayInfo == displayInfo;
+                            })[0];
+                        }
+                        if (sortOrder.displayInfo) {
+                            this.displayInfo = sortOrder.displayInfo;
+                        }
+                        var currentSortOrder = this.currentSortOrder;
+                        if (currentSortOrder && currentSortOrder.browser == selectedBrowser
+                                && currentSortOrder.order == sortOrder) {
+                            if (currentSortOrder.reverse) {
+                                currentSortOrder.reverse = false;
+                            } else {
+                                this.currentSortOrder = null;
+                            }
+                        } else {
+                            this.currentSortOrder = {
+                                browser : selectedBrowser,
+                                order : sortOrder,
+                                reverse : true,
+                                sorter : function (taskGroup1, taskGroup2) {
+                                    var value1 = sortOrder.getter(taskGroup1, selectedBrowser);
+                                    var value2 = sortOrder.getter(taskGroup2, selectedBrowser);
+                                    if (value1 > value2) {
+                                        return 1;
+                                    }
+                                    if (value1 < value2) {
+                                        return -1;
+                                    }
+                                    return 0;
+                                }
+                            };
+                        }
+                    };
+
+                    this.getSortIcon = function (browser, sortOrder) {
+                        var currentSortOrder = this.currentSortOrder || {};
+                        if (sortOrder) {
+                            if (currentSortOrder.order == sortOrder && currentSortOrder.browser == browser) {
+                                return "glyphicon glyphicon glyphicon-sort-by-attributes"
+                                        + (currentSortOrder.reverse ? "-alt" : "");
+                            } else {
+                                return "glyphicon glyphicon-empty";
+                            }
+                        } else {
+                            if (currentSortOrder.browser == browser) {
+                                return "sort-enabled glyphicon glyphicon glyphicon-sort-by-attributes"
+                                        + (currentSortOrder.reverse ? "-alt" : "");
+                            } else {
+                                return "sort-disabled glyphicon glyphicon-sort-by-attributes-alt";
+                            }
+                        }
+                    };
 
                     this.getTasks = function () {
                         var res = $scope.tasksGroups;
@@ -84,6 +148,14 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                             });
                         }
                         this.tasksNumber = res.length;
+                        var currentSortOrder = this.currentSortOrder;
+                        if (currentSortOrder) {
+                            res = res.slice(0);
+                            res.sort(currentSortOrder.sorter);
+                            if (currentSortOrder.reverse) {
+                                res.reverse();
+                            }
+                        }
                         return res;
                     };
 
@@ -119,6 +191,15 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
 
                     this.getIconClass = function (task, browser) {
                         return executionStates.getTaskIcon(task.browsers[browser.browserKey]);
+                    };
+                    this.sortOrders.push({
+                        name : "Result",
+                        displayInfo : "result",
+                        getter : this.getIconClass
+                    });
+
+                    this.getBadgeClass = function (task, browser) {
+                        return "badge " + executionStates.getTaskState(task.browsers[browser.browserKey]);
                     };
 
                     this.toggleFilter = function (browser, state) {
@@ -186,6 +267,39 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                             });
                         }
                     };
+
+                    this.getDuration = function (task, browser) {
+                        var execution = executionStates.getExecution(task.browsers[browser.browserKey]);
+                        if (execution && execution.started) {
+                            if (execution.finished) {
+                                return (execution.finished.time - execution.started.time);
+                            }
+                        }
+                        return -1;
+                    };
+                    this.sortOrders.push({
+                        name : "Duration",
+                        displayInfo : "duration",
+                        getter : this.getDuration
+                    });
+                    this.getDurationText = function (task, browser) {
+                        var res = this.getDuration(task, browser);
+                        return res >= 0 ? res + " ms" : "";
+                    };
+
+                    this.getExecutions = function (task, browser) {
+                        var browserTask = task.browsers[browser.browserKey];
+                        if (browserTask) {
+                            return browserTask.executions.length;
+                        } else {
+                            return 0;
+                        }
+                    };
+                    this.sortOrders.push({
+                        name : "Executions",
+                        displayInfo : "executions",
+                        getter : this.getExecutions
+                    });
 
                     this.getTaskLink = function (task) {
                         return $scope.testURL + encodeURIComponent(task.name);

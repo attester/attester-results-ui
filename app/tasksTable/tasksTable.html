@@ -12,16 +12,27 @@
     See the License for the specific language governing permissions and
     limitations under the License.
  -->
-<div class="btn-group btn-group-sm pull-right" title="Items per page"
-	style="margin: 20px 0;">
-	<button type="button" class="btn btn-default"
-		ng-class="{active: ctrl.pageSize==10}" ng-click="ctrl.pageSize=10">10</button>
-	<button type="button" class="btn btn-default"
-		ng-class="{active: ctrl.pageSize==20}" ng-click="ctrl.pageSize=20">20</button>
-	<button type="button" class="btn btn-default"
-		ng-class="{active: ctrl.pageSize==40}" ng-click="ctrl.pageSize=40">40</button>
-	<button type="button" class="btn btn-default"
-		ng-class="{active: ctrl.pageSize==80}" ng-click="ctrl.pageSize=80">80</button>
+<div class="form-inline pull-right" style="margin: 20px 0;">
+	<div class="form-group">
+		<select class="form-control input-sm" ng-model="ctrl.displayInfo"
+			title="Information to display">
+			<option value="result">Result</option>
+			<option value="duration">Duration</option>
+			<option value="executions">Executions</option>
+		</select>
+	</div>
+	<div class="form-group">
+		<div class="btn-group btn-group-sm" title="Lines per page">
+			<button type="button" class="btn btn-default"
+				ng-class="{active: ctrl.pageSize==10}" ng-click="ctrl.pageSize=10">10</button>
+			<button type="button" class="btn btn-default"
+				ng-class="{active: ctrl.pageSize==20}" ng-click="ctrl.pageSize=20">20</button>
+			<button type="button" class="btn btn-default"
+				ng-class="{active: ctrl.pageSize==40}" ng-click="ctrl.pageSize=40">40</button>
+			<button type="button" class="btn btn-default"
+				ng-class="{active: ctrl.pageSize==80}" ng-click="ctrl.pageSize=80">80</button>
+		</div>
+	</div>
 </div>
 
 <pagination total-items="ctrl.tasksNumber" ng-model="ctrl.currentPage"
@@ -45,7 +56,23 @@
 		<tr>
 			<td><input type="text" class="form-control input-sm"
 				placeholder="Filter tests" ng-model="ctrl.filterTestName"></td>
-			<th ng-repeat="browser in browsersArray">{{browser.name}}</th>
+			<th ng-repeat="browser in browsersArray">{{browser.name}} <span
+				class="dropdown pull-right"> <span
+					ng-class="ctrl.getSortIcon(browser)"
+					ng-click="ctrl.setSortOrder(browser)"></span>
+					<button class="btn btn-default btn-xs" type="button"
+						dropdown-toggle>
+						<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu">
+						<li class="dropdown-header">Sort by</li>
+						<li ng-repeat="sortOrder in ctrl.sortOrders"><a href="#"
+							ng-click="ctrl.setSortOrder(browser, sortOrder, $event)"> <span
+								ng-class="ctrl.getSortIcon(browser, sortOrder)"></span> {{
+								sortOrder.name }}
+						</a></li>
+					</ul>
+			</span></th>
 		</tr>
 		<tr>
 			<td class="task-result"><span
@@ -74,8 +101,15 @@
 			<td><span ng-if="!testURL">{{task.name}}</span><a
 				ng-href="{{ctrl.getTaskLink(task)}}" ng-if="testURL" target="tests">{{task.name}}</a></td>
 			<td ng-repeat="browser in browsersArray"
-				ng-click="ctrl.taskClick(task, browser)" class="task-result"><span
-				ng-class="ctrl.getIconClass(task, browser)"></span></td>
+				ng-click="ctrl.taskClick(task, browser)" class="task-result"
+				ng-switch="ctrl.displayInfo"><span ng-switch-when="result"
+				ng-class="ctrl.getIconClass(task, browser)"></span> <span
+				ng-switch-when="executions"
+				ng-class="ctrl.getBadgeClass(task, browser)">{{
+					ctrl.getExecutions(task, browser) }}</span> <span
+				ng-switch-when="duration"
+				ng-class="ctrl.getBadgeClass(task, browser)">{{
+					ctrl.getDurationText(task, browser) }}</span></td>
 		</tr>
 	</tbody>
 </table>

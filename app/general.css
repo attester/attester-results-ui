@@ -16,6 +16,11 @@ html {
 	overflow-y: scroll;
 }
 
+.glyphicon-empty:before {
+	content: "\e155";
+	color: transparent !important;
+}
+
 .popover.bottom.right-popover {
 	display: block;
 	max-width: 100%;

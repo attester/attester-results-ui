@@ -41,7 +41,7 @@
 
 .task-multi-executions {
 	border-radius: 8px;
-	box-shadow: 2px 2px 2px #ffa0a0;
+	box-shadow: 2px 2px 2px black;
 }
 
 @keyframes blink {

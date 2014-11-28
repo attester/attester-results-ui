@@ -22,16 +22,29 @@ td.task-result:hover {
 	background-color: #d9edf7 !important;
 }
 
-.filter-disabled {
+.filter-disabled, .sort-disabled {
 	opacity: 0.1;
 }
 
-.filter-enabled {
+.filter-enabled, .sort-enabled {
 	opacity: 1;
 }
 
-.filter-enabled:hover, .filter-disabled:hover {
+.sort-enabled, .sort-disabled {
+	color: blue;
+	cursor: pointer;
+}
+
+.filter-enabled:hover, .filter-disabled:hover, .sort-enabled:hover, .sort-disabled:hover {
 	opacity: 0.5;
+}
+
+.badge.success {
+	background-color: green;
+}
+
+.badge.error {
+	background-color: red;
 }
 
 .loading {

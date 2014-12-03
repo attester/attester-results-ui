@@ -14,7 +14,8 @@
  -->
 
 <div class="input-group" ng-if="suggestions.length &gt; 0">
-	<input type="url" class="form-control" ng-model="model" required>
+	<input type="url" class="form-control" ng-model="ctrl.scope.model"
+		required>
 	<div class="input-group-btn" ng-class="ctrl.open ? 'open' : ''">
 		<button ng-click="ctrl.open = !ctrl.open" type="button"
 			class="btn btn-default dropdown-toggle">
@@ -26,5 +27,5 @@
 		</ul>
 	</div>
 </div>
-<input type="url" class="form-control" ng-model="model"
+<input type="url" class="form-control" ng-model="ctrl.scope.model"
 	ng-if="!suggestions || suggestions.length == 0" required>

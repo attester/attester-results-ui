@@ -26,7 +26,7 @@ angular.module("textFieldSuggestions", []).directive("textFieldSuggestions", fun
         controller : ["$scope", function ($scope) {
                     var ctrl = this;
                     ctrl.open = false;
-
+                    ctrl.scope = $scope;
                     this.clickSuggestion = function (event, suggestion) {
                         $scope.model = suggestion;
                         ctrl.open = false;

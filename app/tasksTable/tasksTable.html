@@ -13,6 +13,15 @@
     limitations under the License.
  -->
 <div class="form-inline pull-right" style="margin: 20px 0;">
+	<div class="btn-group dropdown">
+		<button type="button" class="btn btn-default btn-sm dropdown-toggle">Visible columns <span class="caret"></span></button>
+		<ul class="dropdown-menu">
+			<li ng-repeat="browser in browsersArray"><a href="#" ng-click="ctrl.toggleBrowser(browser); $event.preventDefault()"><span class="glyphicon" ng-class="ctrl.visibleBrowsers.indexOf(browser) == -1 ? 'glyphicon-empty' : 'glyphicon-ok'"></span> {{ browser.name }} <small class="text-muted">{{ browser.campaign.campaignId }}</small></a></li>
+			<li class="divider"></li>
+			<li ng-if="ctrl.visibleBrowsers.length != browsersArray.length"><a href="#" ng-click="ctrl.visibleBrowsers = browsersArray.slice(0); $event.preventDefault()">Show all</a></li>
+			<li ng-if="ctrl.visibleBrowsers.length != 0"><a href="#" ng-click="ctrl.visibleBrowsers = []; $event.preventDefault()">Hide all</a></li>
+		</ul>
+	</div>
 	<div class="form-group">
 		<select class="form-control input-sm" ng-model="ctrl.displayInfo"
 			title="Information to display">
@@ -56,7 +65,7 @@
 		<tr>
 			<td><input type="text" class="form-control input-sm"
 				placeholder="Filter tests" ng-model="ctrl.filterTestName"></td>
-			<th ng-repeat="browser in browsersArray">{{browser.name}} <span
+			<th ng-repeat="browser in ctrl.visibleBrowsers">{{browser.name}} <span
 				class="dropdown pull-right"> <span
 					ng-class="ctrl.getSortIcon(browser)"
 					ng-click="ctrl.setSortOrder(browser)"></span>
@@ -67,10 +76,12 @@
 					<ul class="dropdown-menu">
 						<li class="dropdown-header">Sort by</li>
 						<li ng-repeat="sortOrder in ctrl.sortOrders"><a href="#"
-							ng-click="ctrl.setSortOrder(browser, sortOrder, $event)"> <span
+							ng-click="ctrl.setSortOrder(browser, sortOrder); $event.preventDefault()"> <span
 								ng-class="ctrl.getSortIcon(browser, sortOrder)"></span> {{
 								sortOrder.name }}
 						</a></li>
+						<li class="divider"></li>
+						<li><a href="#" ng-click="ctrl.toggleBrowser(browser); $event.preventDefault()">Hide column</a></li>
 					</ul>
 			</span></th>
 		</tr>
@@ -84,7 +95,7 @@
 				ng-click="ctrl.toggleFilterAll('ignored')"></span> <span
 				ng-class="ctrl.getFilterAllClass('waiting')"
 				ng-click="ctrl.toggleFilterAll('waiting')"></span></td>
-			<td ng-repeat="browser in browsersArray" class="task-result"><span
+			<td ng-repeat="browser in ctrl.visibleBrowsers" class="task-result"><span
 				ng-class="ctrl.getFilterClass(browser, 'success')"
 				ng-click="ctrl.toggleFilter(browser, 'success')"></span> <span
 				ng-class="ctrl.getFilterClass(browser, 'error')"
@@ -100,7 +111,7 @@
 			ng-class="ctrl.getTRClass(task)">
 			<td><span ng-if="!testURL">{{task.name}}</span><a
 				ng-href="{{ctrl.getTaskLink(task)}}" ng-if="testURL" target="tests">{{task.name}}</a></td>
-			<td ng-repeat="browser in browsersArray"
+			<td ng-repeat="browser in ctrl.visibleBrowsers"
 				ng-click="ctrl.taskClick(task, browser)" class="task-result"
 				ng-switch="ctrl.displayInfo"><span ng-switch-when="result"
 				ng-class="ctrl.getIconClass(task, browser)"></span> <span

@@ -47,6 +47,7 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                     this.filterTestState = null;
                     this.filterAll = false;
                     this.filteredBrowsers = null;
+                    this.visibleBrowsers = $scope.browsersArray.slice(0);
                     this.displayInfo = "result";
                     this.tasksNumber = 0;
                     this.pageSize = 10;
@@ -54,11 +55,7 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                     this.currentSortOrder = null;
                     this.sortOrders = [];
 
-                    this.setSortOrder = function (selectedBrowser, sortOrder, event) {
-                        if (event) {
-                            event.preventDefault();
-                            event = null;
-                        }
+                    this.setSortOrder = function (selectedBrowser, sortOrder) {
                         if (!sortOrder) {
                             var displayInfo = this.displayInfo;
                             sortOrder = this.sortOrders.filter(function (sortOrder) {
@@ -127,7 +124,7 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                         if (filterTestState) {
                             var filteredBrowsers = this.filteredBrowsers;
                             var filterAll = this.filterAll;
-                            var browsers = filterAll ? $scope.browsersArray : filteredBrowsers;
+                            var browsers = filterAll ? this.visibleBrowsers : filteredBrowsers;
                             var browsersLength = browsers.length;
                             res = res.filter(function (taskGroup) {
                                 var isIncluded = !filterAll;
@@ -170,7 +167,7 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                             var allSuccess = true;
                             var allError = true;
                             var anyError = false;
-                            $scope.browsersArray.forEach(function (browser) {
+                            this.visibleBrowsers.forEach(function (browser) {
                                 var browserTask = browsers[browser.browserKey];
                                 var lastExecution = browserTask ? browserTask.lastExecution : null;
                                 if (lastExecution) {
@@ -310,7 +307,7 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                         var res = [];
                         var currentCampaign = null;
                         var currentHeader = null;
-                        $scope.browsersArray.forEach(function (browser) {
+                        this.visibleBrowsers.forEach(function (browser) {
                             if (browser.campaign == currentCampaign) {
                                 currentHeader.colspan++;
                                 return;
@@ -348,6 +345,18 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                         exportFile(doc, {
                             type : "text/html"
                         }, "tests.html");
+                    };
+
+                    this.toggleBrowser = function (browser) {
+                        var visibleBrowsers = this.visibleBrowsers;
+                        var index = visibleBrowsers.indexOf(browser);
+                        if (index > -1) {
+                            visibleBrowsers.splice(index, 1);
+                        } else {
+                            this.visibleBrowsers = $scope.browsersArray.filter(function (curBrowser) {
+                                return curBrowser === browser || visibleBrowsers.indexOf(curBrowser) != -1;
+                            });
+                        }
                     };
                 }]
             };

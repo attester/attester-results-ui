@@ -12,7 +12,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-td.task-result {
+
+div.divider {
+	height: 5px;
+}
+
+th.browser-header {
+	width: 100px;
+	min-width: 100px;
+	text-align: center;
+}
+
+td.task-name {
+	max-width: 500px;
+	word-wrap: break-word;
+}
+
+td.task-result, td.task-filters {
 	cursor: pointer;
 	text-align: center;
 	vertical-align: middle !important;

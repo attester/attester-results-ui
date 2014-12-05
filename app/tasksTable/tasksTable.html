@@ -65,15 +65,34 @@
 		<tr>
 			<td><input type="text" class="form-control input-sm"
 				placeholder="Filter tests" ng-model="ctrl.filterTestName"></td>
-			<th ng-repeat="browser in ctrl.visibleBrowsers">{{browser.name}} <span
-				class="dropdown pull-right"> <span
-					ng-class="ctrl.getSortIcon(browser)"
-					ng-click="ctrl.setSortOrder(browser)"></span>
-					<button class="btn btn-default btn-xs" type="button"
-						dropdown-toggle>
+			<th ng-repeat="browser in ctrl.visibleBrowsers" class="browser-header">{{browser.name}}</th>
+		</tr>
+		<tr>
+			<td class="task-filters"><span
+				ng-class="ctrl.getFilterAllClass('success')"
+				ng-click="ctrl.toggleFilterAll('success')"></span> <span
+				ng-class="ctrl.getFilterAllClass('error')"
+				ng-click="ctrl.toggleFilterAll('error')"></span> <span
+				ng-class="ctrl.getFilterAllClass('ignored')"
+				ng-click="ctrl.toggleFilterAll('ignored')"></span> <span
+				ng-class="ctrl.getFilterAllClass('waiting')"
+				ng-click="ctrl.toggleFilterAll('waiting')"></span></td>
+			<td ng-repeat="browser in ctrl.visibleBrowsers" class="task-filters"><span
+				ng-class="ctrl.getFilterClass(browser, 'success')"
+				ng-click="ctrl.toggleFilter(browser, 'success')"></span> <span
+				ng-class="ctrl.getFilterClass(browser, 'error')"
+				ng-click="ctrl.toggleFilter(browser, 'error')"></span> <span
+				ng-class="ctrl.getFilterClass(browser, 'ignored')"
+				ng-click="ctrl.toggleFilter(browser, 'ignored')"></span> <span
+				ng-class="ctrl.getFilterClass(browser, 'waiting')"
+				ng-click="ctrl.toggleFilter(browser, 'waiting')"></span>
+				<div class="divider"></div>
+				<span ng-class="ctrl.getSortIcon(browser)" ng-click="ctrl.setSortOrder(browser)"></span>
+				<span class="dropdown">
+					<button class="btn btn-default btn-xs" type="button" dropdown-toggle>
 						<span class="caret"></span>
 					</button>
-					<ul class="dropdown-menu">
+					<ul class="dropdown-menu dropdown-menu-right">
 						<li class="dropdown-header">Sort by</li>
 						<li ng-repeat="sortOrder in ctrl.sortOrders"><a href="#"
 							ng-click="ctrl.setSortOrder(browser, sortOrder); $event.preventDefault()"> <span
@@ -83,33 +102,14 @@
 						<li class="divider"></li>
 						<li><a href="#" ng-click="ctrl.toggleBrowser(browser); $event.preventDefault()">Hide column</a></li>
 					</ul>
-			</span></th>
-		</tr>
-		<tr>
-			<td class="task-result"><span
-				ng-class="ctrl.getFilterAllClass('success')"
-				ng-click="ctrl.toggleFilterAll('success')"></span> <span
-				ng-class="ctrl.getFilterAllClass('error')"
-				ng-click="ctrl.toggleFilterAll('error')"></span> <span
-				ng-class="ctrl.getFilterAllClass('ignored')"
-				ng-click="ctrl.toggleFilterAll('ignored')"></span> <span
-				ng-class="ctrl.getFilterAllClass('waiting')"
-				ng-click="ctrl.toggleFilterAll('waiting')"></span></td>
-			<td ng-repeat="browser in ctrl.visibleBrowsers" class="task-result"><span
-				ng-class="ctrl.getFilterClass(browser, 'success')"
-				ng-click="ctrl.toggleFilter(browser, 'success')"></span> <span
-				ng-class="ctrl.getFilterClass(browser, 'error')"
-				ng-click="ctrl.toggleFilter(browser, 'error')"></span> <span
-				ng-class="ctrl.getFilterClass(browser, 'ignored')"
-				ng-click="ctrl.toggleFilter(browser, 'ignored')"></span> <span
-				ng-class="ctrl.getFilterClass(browser, 'waiting')"
-				ng-click="ctrl.toggleFilter(browser, 'waiting')"></span></td>
+				</span>
+			</td>
 		</tr>
 	</thead>
 	<tbody>
 		<tr ng-repeat="task in ctrl.getDisplayedTasks()"
 			ng-class="ctrl.getTRClass(task)">
-			<td><span ng-if="!testURL">{{task.name}}</span><a
+			<td class="task-name"><span ng-if="!testURL">{{task.name}}</span><a
 				ng-href="{{ctrl.getTaskLink(task)}}" ng-if="testURL" target="tests">{{task.name}}</a></td>
 			<td ng-repeat="browser in ctrl.visibleBrowsers"
 				ng-click="ctrl.taskClick(task, browser)" class="task-result"

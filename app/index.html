@@ -164,10 +164,10 @@
 			browsers-map="comparator.browsersMap"
 			tasks-groups="comparator.tasksGroups"
 			test-url="mainCtrl.config.testURL"></tasks-table> </tab> <tab
-			active="mainCtrl.tabPlusActive"> <tab-heading
+			active="campaignsManager.addCampaignsTabActive"> <tab-heading
 			drag-target="campaignsManager.drop($event.dragSource)"
-			drag-target-enter="mainCtrl.tabPlusActive = true"> <span
-			class="glyphicon glyphicon-plus"></span></tab-heading>
+			drag-target-enter="campaignsManager.addCampaignsTabActive = true">
+		<span class="glyphicon glyphicon-plus"></span></tab-heading>
 		<div class="space"></div>
 		<campaign-chooser server-url="mainCtrl.config.serverURL"
 			server-urls="mainCtrl.config.serverURLs"

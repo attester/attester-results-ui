@@ -14,9 +14,14 @@
  */
 
 angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutionStates", "attesterCampaignsManager",
-        "attesterItemBox", "exportFile"]).directive("tasksTable", ["attesterTaskInfoModal", "AttesterExecutionStates",
-        "exportFile", "attesterCampaignsManager",
-        function (attesterTaskInfoModal, executionStates, exportFile, attesterCampaignsManager) {
+        "attesterItemBox", "exportFile", "attesterMergeCampaignsConfig"]).directive("tasksTable", [
+        "attesterTaskInfoModal",
+        "AttesterExecutionStates",
+        "exportFile",
+        "attesterCampaignsManager",
+        "mergeCampaignsConfigService",
+        function (attesterTaskInfoModal, executionStates, exportFile, attesterCampaignsManager,
+                mergeCampaignsConfigService) {
 
             var sameCampaignHeaders = function (array1, array2) {
                 var l = array1.length;
@@ -57,6 +62,11 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                     this.currentPage = 1;
                     this.currentSortOrder = null;
                     this.sortOrders = [];
+
+                    this.mergeBrowsers = function () {
+                        mergeCampaignsConfigService.addBrowserSources(this.visibleBrowsers);
+                        attesterCampaignsManager.addCampaignsTabActive = true;
+                    };
 
                     this.setSortOrder = function (selectedBrowser, sortOrder) {
                         if (!sortOrder) {

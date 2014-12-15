@@ -22,6 +22,11 @@
 			<li ng-if="ctrl.visibleBrowsers.length != 0"><a href="#" ng-click="ctrl.visibleBrowsers = []; $event.preventDefault()">Hide all</a></li>
 		</ul>
 	</div>
+	<button type="button" class="btn btn-default btn-sm"
+		ng-click="ctrl.mergeBrowsers()"
+		title="Add visible browsers to the merge configuration">
+		<span class="glyphicon glyphicon-share"></span>
+	</button>
 	<div class="form-group">
 		<select class="form-control input-sm" ng-model="ctrl.displayInfo"
 			title="Information to display">

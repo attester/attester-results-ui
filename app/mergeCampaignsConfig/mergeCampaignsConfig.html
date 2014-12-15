@@ -15,9 +15,9 @@
 <h3>
 	<span class="glyphicon glyphicon-chevron-right"></span> Merge campaigns
 </h3>
-<div class="row" ng-if="error">
+<div class="row" ng-if="ctrl.error">
 	<alert class="col-sm-offset-4 col-sm-5" type="danger"
-		close="scope.error = null">{{error}}</alert>
+		close="ctrl.error = null">{{ctrl.error}}</alert>
 </div>
 <div class="row">
 	<div class="col-sm-offset-4 col-sm-5 well"
@@ -39,7 +39,7 @@
 				<tr>
 					<th></th>
 					<th style="padding: 7px 0px;"><item-box
-							ng-repeat="campaign in selectedCampaigns"
+							ng-repeat="campaign in ctrl.selectedCampaigns"
 							close="ctrl.removeCampaign(campaign)"
 							ng-style="{'background-color': campaignsManager.getCampaignColor(campaign)}"
 							drag-source="campaignsManager.getDragSourceFromCampaign(campaign)"
@@ -51,7 +51,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="browser in config.browsers">
+				<tr ng-repeat="browser in ctrl.config.browsers">
 					<td drag-target="ctrl.dropTargetBrowserSource($event)"
 						drag-target-enter="ctrl.dropTargetNewBrowserEnter($event)"
 						drag-target-leave="ctrl.dropTargetBrowserSourceLeave($event)"><item-box
@@ -73,16 +73,16 @@
 				</tr>
 			</tbody>
 			<tfoot>
-				<tr ng-if="unusedBrowsers.length &gt;= 1">
+				<tr ng-if="ctrl.unusedBrowsers.length &gt;= 1">
 					<th>Unused browsers</th>
 					<td style="padding: 7px 0px;"
 						drag-target="ctrl.dropTargetBrowserSource($event)"
-						drag-target-enter="ctrl.dropTargetBrowserSourceEnter($event, unusedBrowsers, unusedBrowsers.length)"
+						drag-target-enter="ctrl.dropTargetBrowserSourceEnter($event, ctrl.unusedBrowsers, ctrl.unusedBrowsers.length)"
 						drag-target-leave="ctrl.dropTargetBrowserSourceLeave($event)"><item-box
-							ng-repeat="browserSource in unusedBrowsers"
-							drag-source="ctrl.getDragSourceForBrowserSource(unusedBrowsers, $index)"
+							ng-repeat="browserSource in ctrl.unusedBrowsers"
+							drag-source="ctrl.getDragSourceForBrowserSource(ctrl.unusedBrowsers, $index)"
 							drag-target="ctrl.dropTargetBrowserSource($event)"
-							drag-target-enter="ctrl.dropTargetBrowserSourceEnter($event, unusedBrowsers, $index)"
+							drag-target-enter="ctrl.dropTargetBrowserSourceEnter($event, ctrl.unusedBrowsers, $index)"
 							drag-target-leave="ctrl.dropTargetBrowserSourceLeave($event)"
 							ng-style="ctrl.getBrowserSourceStyle(browserSource)"
 							label="browserSource.name"></item-box></td>
@@ -90,7 +90,7 @@
 				<tr>
 					<th>Keep executions</th>
 					<td style="padding: 7px 0px;"><select class="form-control"
-						ng-model="config.keepExecutions">
+						ng-model="ctrl.config.keepExecutions">
 							<option value="all">All</option>
 							<option value="lastGroup">Last group</option>
 							<option value="lastOne">Last one</option>

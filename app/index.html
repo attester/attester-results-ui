@@ -35,6 +35,7 @@
 	<script type="text/javascript" src="js/campaignsManager.js"></script>
 	<script type="text/javascript" src="js/campaign.js"></script>
 	<script type="text/javascript" src="js/comparator.js"></script>
+	<script type="text/javascript" src="js/mergeCampaigns.js"></script>
 	<script type="text/javascript" src="js/liveCampaign.js"></script>
 	<script type="text/javascript" src="itemBox/itemBox.js"></script>
 	<script type="text/javascript" src="executionStates/executionStates.js"></script>
@@ -43,9 +44,14 @@
 	<script type="text/javascript" src="taskInfo/taskInfoModal.js"></script>
 	<script type="text/javascript" src="tasksTable/tasksTable.js"></script>
 	<script type="text/javascript" src="campaignChooser/campaignChooser.js"></script>
-	<script type="text/javascript" src="textFieldSuggestions/textFieldSuggestions.js"></script>
+	<script type="text/javascript"
+		src="textFieldSuggestions/textFieldSuggestions.js"></script>
 	<script type="text/javascript"
 		src="compareCampaignsSelector/compareCampaignsSelector.js"></script>
+	<script type="text/javascript"
+		src="mergeCampaignsConfig/mergeCampaignsConfig.js"></script>
+	<script type="text/javascript"
+		src="mergeCampaignsConfig/mergeCampaignsConfigDisplay.js"></script>
 	<div class="container-fluid"
 		ng-controller="MainViewController as mainCtrl">
 		<h1>Attester results</h1>
@@ -123,6 +129,16 @@
 			<dt>Last update</dt>
 			<dd>{{source.campaign.lastUpdate | date: "medium" }}</dd>
 		</dl>
+		<alert ng-if="source.campaign.mergeInfo" type="info"> <span
+			class="glyphicon glyphicon-info-sign"></span> This file is the result
+		of a merge operation.
+		<button type=button " class="btn btn-link"
+			ng-click="source.displayMergeInfo = !source.displayMergeInfo">{{
+			source.displayMergeInfo ? "Hide" :"Show" }} details.</button>
+		<div collapse="!source.displayMergeInfo">
+			<merge-campaigns-config-display config="source.campaign.mergeInfo"></merge-campaigns-config-display>
+		</div>
+		</alert>
 		<div ng-if="source.resultsReceived != source.resultsTotal">
 			Loading {{source.resultsReceived}} / {{source.resultsTotal}}<br>
 			<progressbar
@@ -156,7 +172,9 @@
 		<campaign-chooser server-url="mainCtrl.config.serverURL"
 			server-urls="mainCtrl.config.serverURLs"
 			report-url="mainCtrl.config.reportURL"
-			report-urls="mainCtrl.config.reportURLs"></campaign-chooser> <compare-campaigns-selector
+			report-urls="mainCtrl.config.reportURLs"></campaign-chooser> <merge-campaigns-config
+			on-select="campaignsManager.addSource($source)"></merge-campaigns-config>
+		<compare-campaigns-selector
 			on-select="mainCtrl.addComparator($comparator)"
 			campaigns="campaignsManager.getLoadedCampaigns()"></compare-campaigns-selector>
 		<div class="divider"></div>

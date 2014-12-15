@@ -1,0 +1,110 @@
+<!--
+    Copyright 2014 Amadeus s.a.s.
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+<h3>
+	<span class="glyphicon glyphicon-chevron-right"></span> Merge campaigns
+</h3>
+<div class="row" ng-if="error">
+	<alert class="col-sm-offset-4 col-sm-5" type="danger"
+		close="scope.error = null">{{error}}</alert>
+</div>
+<div class="row">
+	<div class="col-sm-offset-4 col-sm-5 well"
+		drag-target="ctrl.mainDrop($event.dragSource)"
+		drag-target-enter="ctrl.dropping = $event.dragSource"
+		drag-target-leave="ctrl.dropping = null">
+		<div class="text-center">
+			<span ng-hide="ctrl.dropping">Tip: drop attester campaigns
+				here to merge them.</span> <span ng-show="ctrl.dropping">Drop this
+				item here to update the merge configuration.</span>
+		</div>
+		<div class="divider"></div>
+		<table ng-if="ctrl.isExpanded()" style="width: 100%;">
+			<thead>
+				<tr>
+					<th style="width: 150px;">Browser name</th>
+					<th>Sources</th>
+				</tr>
+				<tr>
+					<th></th>
+					<th style="padding: 7px 0px;"><item-box
+							ng-repeat="campaign in selectedCampaigns"
+							close="ctrl.removeCampaign(campaign)"
+							ng-style="{'background-color': campaignsManager.getCampaignColor(campaign)}"
+							drag-source="campaignsManager.getDragSourceFromCampaign(campaign)"
+							label="campaign.campaignId"></item-box> <item-box
+							ng-repeat="waitingSource in ctrl.getWaitingSources()"
+							close="ctrl.removeWaitingSource($index)"
+							label="waitingSource.error ? 'Error !' : 'Loading...'"
+							title="{{waitingSource.error}}"></item-box></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="browser in config.browsers">
+					<td drag-target="ctrl.dropTargetBrowserSource($event)"
+						drag-target-enter="ctrl.dropTargetNewBrowserEnter($event)"
+						drag-target-leave="ctrl.dropTargetBrowserSourceLeave($event)"><item-box
+							close="ctrl.removeBrowser($index)"
+							ng-style="{'background-color': 'white'}" label="browser.name"
+							editable="true"></item-box></td>
+					<td style="padding: 2px 0px;"
+						drag-target="ctrl.dropTargetBrowserSource($event)"
+						drag-target-enter="ctrl.dropTargetBrowserSourceEnter($event, browser.sources, browser.sources.length)"
+						drag-target-leave="ctrl.dropTargetBrowserSourceLeave($event)"><item-box
+							ng-repeat="browserSource in browser.sources"
+							drag-source="ctrl.getDragSourceForBrowserSource(browser.sources, $index)"
+							drag-target="ctrl.dropTargetBrowserSource($event)"
+							drag-target-enter="ctrl.dropTargetBrowserSourceEnter($event, browser.sources, $index)"
+							drag-target-leave="ctrl.dropTargetBrowserSourceLeave($event)"
+							close="ctrl.removeBrowserSource(browser, $index)"
+							ng-style="ctrl.getBrowserSourceStyle(browserSource)"
+							label="browserSource.name"></item-box></td>
+				</tr>
+			</tbody>
+			<tfoot>
+				<tr ng-if="unusedBrowsers.length &gt;= 1">
+					<th>Unused browsers</th>
+					<td style="padding: 7px 0px;"
+						drag-target="ctrl.dropTargetBrowserSource($event)"
+						drag-target-enter="ctrl.dropTargetBrowserSourceEnter($event, unusedBrowsers, unusedBrowsers.length)"
+						drag-target-leave="ctrl.dropTargetBrowserSourceLeave($event)"><item-box
+							ng-repeat="browserSource in unusedBrowsers"
+							drag-source="ctrl.getDragSourceForBrowserSource(unusedBrowsers, $index)"
+							drag-target="ctrl.dropTargetBrowserSource($event)"
+							drag-target-enter="ctrl.dropTargetBrowserSourceEnter($event, unusedBrowsers, $index)"
+							drag-target-leave="ctrl.dropTargetBrowserSourceLeave($event)"
+							ng-style="ctrl.getBrowserSourceStyle(browserSource)"
+							label="browserSource.name"></item-box></td>
+				</tr>
+				<tr>
+					<th>Keep executions</th>
+					<td style="padding: 7px 0px;"><select class="form-control"
+						ng-model="config.keepExecutions">
+							<option value="all">All</option>
+							<option value="lastGroup">Last group</option>
+							<option value="lastOne">Last one</option>
+					</select></td>
+				</tr>
+			</tfoot>
+		</table>
+
+		<div class="divider"></div>
+		<div ng-if="ctrl.isExpanded()" class="text-center">
+			<button type="button" class="btn btn-primary"
+				ng-disabled="ctrl.getWaitingSources().length &gt; 0"
+				ng-click="ctrl.submit()">Merge</button>
+			<button type="button" class="btn btn-primary" ng-click="ctrl.clear()">Clear</button>
+		</div>
+	</div>
+</div>

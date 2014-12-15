@@ -29,6 +29,7 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
         this.browsersMap = null;
         this.slavesMap = null;
         this.slavesArray = null;
+        this.mergeInfo = null;
         this.lastUpdate = null;
         this.contentAsString = null;
         this.blobURL = null;
@@ -65,7 +66,8 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
         }
         var lastExecution = {
             state : "waiting",
-            indexInTask : 0
+            indexInTask : 0,
+            events : []
         };
         var task = {
             name : taskName,
@@ -148,6 +150,7 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
         }
         lastExecution[property] = event;
         lastExecution.state = property;
+        lastExecution.events.push(event);
         return task;
     };
 
@@ -185,6 +188,7 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
     var processEvents = {
         "tasksList" : function (event) {
             this.campaignId = event.campaignId;
+            this.mergeInfo = event.mergeInfo;
             this.browsersArray = [];
             this.browsersMap = {};
             this.tasksGroups = [];
@@ -232,7 +236,8 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
                 task.lastExecution = {
                     state : "waiting",
                     task : task,
-                    indexInTask : indexInTask
+                    indexInTask : indexInTask,
+                    events : []
                 };
                 task.executions[indexInTask] = task.lastExecution;
             }
@@ -245,6 +250,7 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
             if (!lastExecution.errors) {
                 lastExecution.errors = [];
             }
+            lastExecution.events.push(event);
             lastExecution.errors.push(event);
             var testId = event.testId;
             if (testId) {
@@ -266,6 +272,7 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
                 return;
             }
             var testId = event.testId;
+            lastExecution.events.push(event);
             var testsMap = lastExecution.testsMap;
             if (!testsMap) {
                 testsMap = lastExecution.testsMap = {};
@@ -302,6 +309,7 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
             if (!lastExecution) {
                 return;
             }
+            lastExecution.events.push(event);
             var testsMap = lastExecution.testsMap;
             var currentTest = testsMap[event.testId];
             if (!currentTest || currentTest.finished) {
@@ -324,9 +332,10 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
         }
         this.clearCachedContent();
         this.events.push(event);
-        if (!/^(test|error$)/.test(eventName)) {
+        if (!/^(test|error$)/.test(eventName) && (!this.mergeInfo || !this.lastUpdate)) {
             // events whose name start with "test" and the error event can use the clock of the slave,
             // which may differ from the one of the server
+            // merged reports have their events in a non-chronological order
             if (event.time < this.lastUpdate) {
                 console.log("Regression in time, passing from " + this.lastUpdate + " to " + event.time);
             }

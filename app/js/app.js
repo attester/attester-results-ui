@@ -15,7 +15,8 @@
 
 (function () {
     var app = angular.module("attester-ui", ["attesterTasksTable", "attesterCampaignChooser", "attesterItemBox",
-            "attesterCampaignsManager", "attesterCompareCampaignsSelector", "ui.bootstrap", "dragdrop", "exportFile"]);
+            "attesterMergeCampaignsConfig", "attesterMergeCampaignsConfigDisplay", "attesterCampaignsManager",
+            "attesterCompareCampaignsSelector", "ui.bootstrap", "dragdrop", "exportFile"]);
 
     app.controller("MainViewController", ["$http", "$scope", "attesterCampaignsManager", "exportFile",
             function ($http, $scope, campaignsManager, exportFile) {

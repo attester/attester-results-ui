@@ -14,9 +14,8 @@
  */
 
 angular.module("exportFile", []).factory("exportFile", function () {
-    return function (content, options, fileName) {
-        var blob = new Blob(content, options);
-        var url = URL.createObjectURL(blob);
+
+    var saveURL = function (url, fileName) {
         var a = document.createElement("a");
         a.setAttribute("href", url);
         a.setAttribute("download", fileName);
@@ -26,4 +25,14 @@ angular.module("exportFile", []).factory("exportFile", function () {
             a.parentNode.removeChild(a);
         }, 1);
     };
+
+    var exportFile = function (content, options, fileName) {
+        var blob = new Blob(content, options);
+        var url = URL.createObjectURL(blob);
+        saveURL(url, fileName);
+    };
+
+    exportFile.saveURL = saveURL;
+
+    return exportFile;
 });

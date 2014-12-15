@@ -59,8 +59,7 @@
 			</span>
 			</th>
 			<th ng-repeat="header in ctrl.getCampaignHeaders()"
-				colspan="{{header.colspan}}">Campaign
-				{{header.campaign.campaignId}}</th>
+				colspan="{{header.colspan}}"><item-box label="header.campaign.campaignId" ng-style="{ 'background-color': campaignsManager.getCampaignColor(header.campaign) }" drag-source="campaignsManager.getDragSourceFromCampaign(header.campaign)"></item-box></th>
 		</tr>
 		<tr>
 			<td><input type="text" class="form-control input-sm"

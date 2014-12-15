@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-angular.module("attesterCampaignChooser", ["attesterLiveCampaign", "attesterCampaign", "textFieldSuggestions"]).directive("campaignChooser", [
-        "$http", "AttesterLiveCampaign", "AttesterCampaign", function ($http, AttesterLiveCampaign, AttesterCampaign) {
+angular.module("attesterCampaignChooser", ["textFieldSuggestions", "attesterCampaignsManager"]).directive("campaignChooser", [
+        "attesterCampaignsManager", function (campaignsManager) {
 
             return {
                 restrict : "E",
@@ -22,8 +22,7 @@ angular.module("attesterCampaignChooser", ["attesterLiveCampaign", "attesterCamp
                     serverURL : "=serverUrl",
                     serverURLs : "=serverUrls",
                     reportURL : "=reportUrl",
-                    reportURLs : "=reportUrls",
-                    onSelect : "&"
+                    reportURLs : "=reportUrls"
                 },
                 templateUrl : "campaignChooser/campaignChooser.html",
                 controllerAs : "ctrl",
@@ -33,85 +32,17 @@ angular.module("attesterCampaignChooser", ["attesterLiveCampaign", "attesterCamp
                             this.serverURLs = $scope.serverURLs || [];
                             this.reportURLs = $scope.reportURLs || [];
 
-                            var processFile = function (file) {
-                                var sourceObject = {
-                                    type : "file",
-                                    file : file.name
-                                };
-                                var reader = new FileReader();
-                                reader.onload = function () {
-                                    var text = reader.result;
-                                    $scope.$apply(processReportContent.bind(null, sourceObject, text));
-                                };
-                                reader.readAsText(file);
-                                $scope.onSelect({
-                                    $source : sourceObject
-                                });
-                            };
-
-                            var processServerURL = function (serverURL) {
-                                var liveCampaign = new AttesterLiveCampaign(serverURL);
-                                $scope.onSelect({
-                                    $source : liveCampaign
-                                });
-                            };
-
-                            var processReportURL = function (reportURL) {
-                                var sourceObject = {
-                                    type : "reportURL",
-                                    reportURL : reportURL
-                                };
-                                $http({
-                                    url : reportURL,
-                                    method : "GET",
-                                    transformResponse : []
-                                }).success(function (data, status, headers, config) {
-                                    processReportContent(sourceObject, data);
-                                }).error(function (data) {
-                                    data = data || "";
-                                    sourceObject.error = "Error while downloading the report. " + data;
-                                });
-                                $scope.onSelect({
-                                    $source : sourceObject
-                                });
-                            };
-
-                            var processReportContent = function (sourceObject, sourceContent) {
-                                sourceContent = sourceContent.trim();
-                                if (sourceContent.charAt(sourceContent.length - 1) != ']') {
-                                    sourceContent = sourceContent + ']';
-                                }
-                                try {
-                                    var data = JSON.parse(sourceContent);
-                                    var campaign = sourceObject.campaign = new AttesterCampaign();
-                                    campaign.addEvents(data);
-                                } catch (e) {
-                                    sourceObject.error = "Error while reading the report: " + e;
-                                }
-                            };
-
-                            this.drop = function (dataTransfer) {
-                                var files = dataTransfer.files;
-                                if (files && files.length > 0) {
-                                    for (var i = 0, l = files.length; i < l; i++) {
-                                        processFile(files[i]);
-                                    }
-                                    return;
-                                }
-                                var url = dataTransfer.getData("URL");
-                                if (url) {
-                                    processReportURL(url);
-                                    return;
-                                }
-                            };
-
                             this.submitLiveServer = function () {
-                                processServerURL(this.serverURL);
+                                campaignsManager.createSourceFromServerURL(this.serverURL).active = true;
                             };
 
                             this.submitRecordedLog = function () {
-                                processReportURL(this.reportURL);
+                                campaignsManager.createSourceFromReportURL(this.reportURL).active = true;
                             };
+
+                            this.drop = function (dragSource) {
+                                campaignsManager.drop(dragSource);
+                            }
                         }]
             };
         }]);

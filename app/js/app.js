@@ -14,68 +14,31 @@
  */
 
 (function () {
-    var app = angular.module("attester-ui", ["attesterTasksTable", "attesterCampaignChooser",
-            "attesterCompareCampaignsSelector", "ui.bootstrap", "dragdrop", "exportFile"]);
+    var app = angular.module("attester-ui", ["attesterTasksTable", "attesterCampaignChooser", "attesterItemBox",
+            "attesterCampaignsManager", "attesterCompareCampaignsSelector", "ui.bootstrap", "dragdrop", "exportFile"]);
 
-    var sameArray = function (array1, array2) {
-        var l = array1.length;
-        if (l !== array2.length) {
-            return false;
-        }
-        for (var i = 0; i < l; i++) {
-            if (array1[i] !== array2[i]) {
-                return false;
-            }
-        }
-        return true;
-    };
-
-    app.controller("MainViewController", ["$http", "exportFile", function ($http, exportFile) {
+    app.controller("MainViewController", ["$http", "$scope", "attesterCampaignsManager", "exportFile",
+            function ($http, $scope, campaignsManager, exportFile) {
                 var ctrl = this;
 
-                var sources = ctrl.sources = [];
-                ctrl.addSource = function (source) {
-                    sources.push(source);
-                    source.active = true;
-                };
-                ctrl.removeSource = function (index) {
-                    var source = sources[index];
-                    if (source.disconnect) {
-                        source.disconnect();
-                    }
-                    sources.splice(index, 1);
-                };
+                $scope.campaignsManager = campaignsManager;
+
                 var comparators = ctrl.comparators = [];
                 ctrl.addComparator = function (comparator) {
+                    if (comparator.campaign) {
+                        ctrl.addSource(comparator);
+                        return;
+                    }
                     comparators.push(comparator);
                     comparator.active = true;
                 };
+
                 ctrl.removeComparator = function (index) {
                     comparators.splice(index, 1);
                 };
 
                 ctrl.saveLogs = function (campaign) {
-                    var content = JSON.stringify(campaign.events);
-                    exportFile([content], {
-                        type : "application/json"
-                    }, "Campaign " + (campaign.campaignId || "") + ".json");
-                };
-
-                var previouslyLoadedCampaigns = [];
-                ctrl.getLoadedCampaigns = function () {
-                    var campaigns = [];
-                    for (var i = 0, l = sources.length; i < l; i++) {
-                        var curCampaign = sources[i].campaign;
-                        if (curCampaign && curCampaign.campaignId) {
-                            campaigns.push(curCampaign);
-                        }
-                    }
-                    // returns the same array as before if it did not change
-                    // (for the stability of the data model)
-                    if (!sameArray(previouslyLoadedCampaigns, campaigns)) {
-                        previouslyLoadedCampaigns = campaigns;
-                    }
-                    return previouslyLoadedCampaigns;
+                    exportFile.saveURL(campaign.getBlobURL(), campaign.campaignId + ".json");
                 };
 
                 $http.get("config.json").success(function (config) {

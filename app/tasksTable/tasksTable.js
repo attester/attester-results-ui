@@ -13,9 +13,10 @@
  * limitations under the License.
  */
 
-angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutionStates", "exportFile"]).directive("tasksTable", [
-        "attesterTaskInfoModal", "AttesterExecutionStates", "exportFile",
-        function (attesterTaskInfoModal, executionStates, exportFile) {
+angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutionStates", "attesterCampaignsManager",
+        "attesterItemBox", "exportFile"]).directive("tasksTable", ["attesterTaskInfoModal", "AttesterExecutionStates",
+        "exportFile", "attesterCampaignsManager",
+        function (attesterTaskInfoModal, executionStates, exportFile, attesterCampaignsManager) {
 
             var sameCampaignHeaders = function (array1, array2) {
                 var l = array1.length;
@@ -43,6 +44,8 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                 },
                 controllerAs : "ctrl",
                 controller : ["$scope", function ($scope) {
+                    $scope.campaignsManager = attesterCampaignsManager;
+
                     this.filterTestName = "";
                     this.filterTestState = null;
                     this.filterAll = false;

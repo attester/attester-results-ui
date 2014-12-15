@@ -15,10 +15,7 @@
 <h3>
 	<span class="glyphicon glyphicon-chevron-right"></span> Open a campaign
 </h3>
-<div drop="ctrl.drop($dataTransfer)" drop-variable="ctrl.dropping">
-	<div class="alert alert-info" ng-if="ctrl.dropping">Drop this
-		item here to open it.</div>
-
+<div>
 	<form class="form-horizontal" role="formLiveServer"
 		name="formLiveServer" ng-submit="ctrl.submitLiveServer()" novalidate>
 		<div class="form-group">
@@ -50,8 +47,16 @@
 			</div>
 		</div>
 	</form>
-
-	<div class="text-center" ng-hide="ctrl.dropping">Tip: drop an
-		attester log json file or a link to such a file here to open it.</div>
-
+</div>
+<div class="row">
+	<div class="col-sm-offset-4 col-sm-5 text-center"
+		drag-target="ctrl.drop($event.dragSource)"
+		drag-target-enter="ctrl.dropping = $event.dragSource"
+		drag-target-leave="ctrl.dropping = null"
+		ng-class="ctrl.dropping ? 'alert alert-info' : 'well'"
+		style="height: 60px;">
+		<span ng-hide="ctrl.dropping">Tip: drop an attester log json
+			file or a link to such a file here to open it.</span> <span
+			ng-show="ctrl.dropping">Drop this item here to open it.</span>
+	</div>
 </div>

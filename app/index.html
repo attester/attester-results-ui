@@ -21,6 +21,7 @@
 <link rel="stylesheet" href="testsDetails/testsDetails.css">
 <link rel="stylesheet" href="executionStates/executionStates.css">
 <link rel="stylesheet" href="tasksTable/tasksTable.css">
+<link rel="stylesheet" href="itemBox/itemBox.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
@@ -31,9 +32,11 @@
 	<script type="text/javascript" src="js/exportFile.js"></script>
 	<script type="text/javascript" src="js/dragdrop.js"></script>
 	<script type="text/javascript" src="js/app.js"></script>
+	<script type="text/javascript" src="js/campaignsManager.js"></script>
 	<script type="text/javascript" src="js/campaign.js"></script>
 	<script type="text/javascript" src="js/comparator.js"></script>
 	<script type="text/javascript" src="js/liveCampaign.js"></script>
+	<script type="text/javascript" src="itemBox/itemBox.js"></script>
 	<script type="text/javascript" src="executionStates/executionStates.js"></script>
 	<script type="text/javascript" src="testsDetails/testsDetails.js"></script>
 	<script type="text/javascript" src="taskInfo/taskInfo.js"></script>
@@ -70,16 +73,20 @@
 			</div>
 		</div>
 		<tabset ng-if="mainCtrl.config"> <tab
-			ng-repeat="source in mainCtrl.sources" active="source.active">
-		<tab-heading> <span ng-if="source.campaign.campaignId">{{source.campaign.campaignId}}
-		</span> <span ng-if="!source.campaign.campaignId">Loading...</span> &nbsp;
+			ng-repeat="source in campaignsManager.sources" active="source.active">
+		<tab-heading> <span ng-if="source.campaign.campaignId"><item-box
+				drag-source="campaignsManager.getDragSourceFromCampaignSource(source)"
+				ng-style="{'background-color':campaignsManager.getCampaignColor(source.campaign)}"
+				label="source.campaign.campaignId"></item-box> </span> <span
+			ng-if="!source.campaign.campaignId">{{ source.error ? 'Error
+			!' : 'Loading...' }}</span> &nbsp;
 		<button type="button" class="close"
-			ng-click="mainCtrl.removeSource($index)">
+			ng-click="campaignsManager.removeSource($index)">
 			<span>&times;</span>
 		</button>
 		</tab-heading>
 		<div class="space"></div>
-		<button ng-if="source.campaign"
+		<button ng-if="source.campaign && source.campaign.campaignId"
 			class="pull-right btn btn-default btn-xs"
 			ng-click="mainCtrl.saveLogs(source.campaign)"
 			title="Save this campaign's results">
@@ -140,16 +147,19 @@
 		<tasks-table browsers-array="comparator.browsersArray"
 			browsers-map="comparator.browsersMap"
 			tasks-groups="comparator.tasksGroups"
-			test-url="mainCtrl.config.testURL"></tasks-table> </tab> <tab> <tab-heading>
-		<span class="glyphicon glyphicon-plus"></span></tab-heading>
+			test-url="mainCtrl.config.testURL"></tasks-table> </tab> <tab
+			active="mainCtrl.tabPlusActive"> <tab-heading
+			drag-target="campaignsManager.drop($event.dragSource)"
+			drag-target-enter="mainCtrl.tabPlusActive = true"> <span
+			class="glyphicon glyphicon-plus"></span></tab-heading>
 		<div class="space"></div>
-		<campaign-chooser on-select="mainCtrl.addSource($source)"
-			server-url="mainCtrl.config.serverURL"
+		<campaign-chooser server-url="mainCtrl.config.serverURL"
 			server-urls="mainCtrl.config.serverURLs"
 			report-url="mainCtrl.config.reportURL"
 			report-urls="mainCtrl.config.reportURLs"></campaign-chooser> <compare-campaigns-selector
 			on-select="mainCtrl.addComparator($comparator)"
-			campaigns="mainCtrl.getLoadedCampaigns()"></compare-campaigns-selector>
+			campaigns="campaignsManager.getLoadedCampaigns()"></compare-campaigns-selector>
+		<div class="divider"></div>
 		</tab> </tabset>
 	</div>
 </body>

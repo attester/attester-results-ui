@@ -30,6 +30,8 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
         this.slavesMap = null;
         this.slavesArray = null;
         this.lastUpdate = null;
+        this.contentAsString = null;
+        this.blobURL = null;
     };
 
     var getBrowser = function (browserName) {
@@ -320,6 +322,7 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
         if (fn) {
             fn.call(this, event);
         }
+        this.clearCachedContent();
         this.events.push(event);
         if (!/^(test|error$)/.test(eventName)) {
             // events whose name start with "test" and the error event can use the clock of the slave,
@@ -329,6 +332,47 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
             }
             this.lastUpdate = event.time;
         }
+    };
+
+    AttesterCampaign.prototype.clearCachedContent = function () {
+        this.contentAsString = null;
+        if (this.blobURL) {
+            URL.revokeObjectURL(this.blobURL);
+            this.blobURL = null;
+        }
+    };
+
+    AttesterCampaign.prototype.getContentAsString = function () {
+        if (!this.contentAsString) {
+            this.contentAsString = JSON.stringify(this.events);
+        }
+        return this.contentAsString;
+    };
+
+    AttesterCampaign.prototype.getBlobURL = function () {
+        if (!this.blobURL) {
+            var blob = new Blob([this.getContentAsString()], {
+                type : "application/json"
+            });
+            this.blobURL = URL.createObjectURL(blob);
+        }
+        return this.blobURL;
+    };
+
+    AttesterCampaign.prototype.getDownloadURL = function () {
+        if (this.campaignId) {
+            return "application/json:" + this.campaignId + ".json:" + this.getBlobURL();
+        }
+    };
+
+    AttesterCampaign.prototype.setContentFromString = function (sourceContent) {
+        sourceContent = sourceContent.trim();
+        if (sourceContent.charAt(sourceContent.length - 1) != ']') {
+            sourceContent = sourceContent + ']';
+        }
+        var data = JSON.parse(sourceContent);
+        this.addEvents(data);
+        this.contentAsString = sourceContent;
     };
 
     return AttesterCampaign;

@@ -19,7 +19,7 @@ var express = require("express");
 module.exports = function (config) {
     var app = express();
     app.use("/", express.static(path.join(__dirname, "app")));
-    app.use("/lib/angular", express.static(require.resolve("angular/angular.min.js")));
+    app.use("/lib/angular", express.static(path.dirname(require.resolve("angular/angular.min.js"))));
     app.get("/config.json", function (req, res) {
         res.json(config);
     });

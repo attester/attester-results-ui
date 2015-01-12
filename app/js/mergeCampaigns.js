@@ -234,6 +234,8 @@ angular.module("attesterMergeCampaigns", ["attesterCampaign", "attesterCampaigns
                             taskIdCounter++;
                             return {
                                 name : taskName + " on " + browserDefinition.name,
+                                taskName : taskName,
+                                browserName : browserDefinition.name,
                                 taskId : taskId
                             };
                         }).filter(nonNull)

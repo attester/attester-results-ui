@@ -51,18 +51,23 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
     };
 
     var initLeafTask = function (parentTask, taskDef) {
-        var taskName = taskDef.name;
-        var browserName = "default";
+        var taskName = taskDef.taskName;
+        var browserName = taskDef.browserName || "default";
+        if (!taskName) {
+            // backward compatibility
+            taskName = taskDef.name;
+            var splitName = /^(.+) on (.+)$/.exec(taskName);
+            if (splitName) {
+                taskName = splitName[1];
+                browserName = splitName[2];
+            }
+        }
         var taskGroup = {
             name : taskName
         };
-        if (parentTask) {
-            var sizeBeforeBrowserName = parentTask.name.length + 4;
-            if (taskName.substr(0, sizeBeforeBrowserName) == parentTask.name + " on ") {
-                // parentTask contains the same task for different browsers
-                browserName = taskName.substr(sizeBeforeBrowserName);
-                taskGroup = parentTask;
-            }
+        if (parentTask && parentTask.name == taskName) {
+            // parentTask contains the same task for different browsers
+            taskGroup = parentTask;
         }
         var lastExecution = {
             state : "waiting",
@@ -70,7 +75,7 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
             events : []
         };
         var task = {
-            name : taskName,
+            name : taskName + " on " + browserName,
             browser : getBrowser.call(this, browserName),
             taskGroup : taskGroup,
             lastExecution : lastExecution,

@@ -157,6 +157,34 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                                 return isIncluded;
                             });
                         }
+                        var counts = this.counts = {};
+                        var totalCount = counts.total = {
+                            error : 0,
+                            success : 0,
+                            waiting : 0,
+                            ignored : 0,
+                            total : 0
+                        };
+                        this.visibleBrowsers.forEach(function (curBrowser) {
+                            var curBrowserCount = {
+                                error : 0,
+                                success : 0,
+                                waiting : 0,
+                                ignored : 0,
+                                total : 0
+                            };
+                            res.forEach(function (taskGroup) {
+                                var curTaskState = executionStates.getTaskState(taskGroup.browsers[curBrowser.browserKey]);
+                                curBrowserCount[curTaskState]++;
+                                curBrowserCount.total++;
+                            });
+                            counts[curBrowser.browserKey] = curBrowserCount;
+                            totalCount.error += curBrowserCount.error;
+                            totalCount.success += curBrowserCount.success;
+                            totalCount.waiting += curBrowserCount.waiting;
+                            totalCount.ignored += curBrowserCount.ignored;
+                            totalCount.total += curBrowserCount.total;
+                        });
                         this.tasksNumber = res.length;
                         var currentSortOrder = this.currentSortOrder;
                         if (currentSortOrder) {

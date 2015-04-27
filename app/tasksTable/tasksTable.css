@@ -71,3 +71,7 @@ td.task-result:hover {
 	width: 32px;
 	height: 32px;
 }
+
+th .progress {
+	margin-bottom: 0px;
+}

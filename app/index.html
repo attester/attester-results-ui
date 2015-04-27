@@ -127,7 +127,7 @@
 		</dl>
 		<dl class="dl-horizontal" ng-if="source.campaign.lastUpdate">
 			<dt>Last update</dt>
-			<dd>{{source.campaign.lastUpdate | date: "medium" }}</dd>
+			<dd>{{source.campaign.lastUpdate | date: "medium" }} ({{source.campaign.events.length}} events)</dd>
 		</dl>
 		<alert ng-if="source.campaign.mergeInfo" type="info"> <span
 			class="glyphicon glyphicon-info-sign"></span> This file is the result

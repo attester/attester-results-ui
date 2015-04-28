@@ -45,21 +45,45 @@ angular.module("attesterExecutionStates", []).factory("AttesterExecutionStates",
         return res;
     };
 
+    var executionChooser = "lastNonWaiting";
+    var executionChoosersMap = {
+        lastNonWaiting: function (browserTask) {
+            var lastExecution = browserTask.lastExecution;
+            var executionsLength = browserTask.executions.length;
+            if (executionsLength > 1 && getExecutionState(lastExecution) == "waiting") {
+                lastExecution = browserTask.executions[executionsLength - 2];
+            }
+            return lastExecution;
+        },
+        last: function (browserTask) {
+            return browserTask.lastExecution;
+        },
+        first: function (browserTask) {
+            return browserTask.executions[0];
+        }
+    }
+    var executionChooserFn = executionChoosersMap[executionChooser];
+
     var getExecution = function (browserTask) {
         if (!browserTask) {
             return {
                 ignored : true
             };
         }
-        var lastExecution = browserTask.lastExecution;
-        var executionsLength = browserTask.executions.length;
-        if (executionsLength > 1 && getExecutionState(lastExecution) == "waiting") {
-            lastExecution = browserTask.executions[executionsLength - 2];
-        }
-        return lastExecution;
+        return executionChooserFn(browserTask);
     };
 
     return {
+        getExecutionChooser : function () {
+            return executionChooser;
+        },
+        setExecutionChooser : function (newExecutionChooser) {
+            if (! executionChoosersMap.hasOwnProperty(newExecutionChooser)) {
+                throw new Error("Invalid execution chooser: " + newExecutionChooser);
+            }
+            executionChooser = newExecutionChooser;
+            executionChooserFn = executionChoosersMap[executionChooser];
+        },
         getStateIcon : getStateIcon,
         getExecution : getExecution,
         getExecutionState : getExecutionState,

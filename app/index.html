@@ -74,6 +74,16 @@
 									title="String to prepend to the name of the test to build the test URLs.">
 							</div>
 						</div>
+						<div class="form-group">
+							<label class="col-sm-2 control-label">Execution chooser</label>
+							<div class="col-sm-8">
+								<select class="form-control input-sm" ng-model="mainCtrl.executionChooser" ng-model-options="{ getterSetter: true }">
+									<option value="lastNonWaiting">Last non-waiting</option>
+									<option value="last">Last</option>
+									<option value="first">First</option>
+								</select>
+							</div>
+						</div>
 					</form>
 				</div>
 			</div>

@@ -16,10 +16,10 @@
 (function () {
     var app = angular.module("attester-ui", ["attesterTasksTable", "attesterCampaignChooser", "attesterItemBox",
             "attesterMergeCampaignsConfig", "attesterMergeCampaignsConfigDisplay", "attesterCampaignsManager",
-            "attesterCompareCampaignsSelector", "ui.bootstrap", "dragdrop", "exportFile"]);
+            "attesterCompareCampaignsSelector", "attesterExecutionStates", "ui.bootstrap", "dragdrop", "exportFile"]);
 
-    app.controller("MainViewController", ["$http", "$scope", "attesterCampaignsManager", "exportFile",
-            function ($http, $scope, campaignsManager, exportFile) {
+    app.controller("MainViewController", ["$http", "$scope", "attesterCampaignsManager", "exportFile", "AttesterExecutionStates",
+            function ($http, $scope, campaignsManager, exportFile, executionStates) {
                 var ctrl = this;
 
                 $scope.campaignsManager = campaignsManager;
@@ -40,6 +40,13 @@
 
                 ctrl.saveLogs = function (campaign) {
                     exportFile.saveURL(campaign.getBlobURL(), campaign.campaignId + ".json");
+                };
+
+                ctrl.executionChooser = function (value) {
+                    if (!value) {
+                        return executionStates.getExecutionChooser();
+                    }
+                    executionStates.setExecutionChooser(value);
                 };
 
                 $http.get("config.json").success(function (config) {

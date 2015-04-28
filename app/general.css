@@ -27,6 +27,7 @@ html {
 	position: relative;
 	margin-top: 45px;
 	margin-bottom: 20px;
+	z-index: 0;
 }
 
 .popover.bottom.right-popover>.arrow {

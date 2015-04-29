@@ -13,8 +13,8 @@
     limitations under the License.
  -->
 <div class="form-inline pull-right" style="margin: 20px 0;">
-	<div class="btn-group dropdown">
-		<button type="button" class="btn btn-default btn-sm dropdown-toggle">Visible columns <span class="caret"></span></button>
+	<div class="btn-group dropdown" dropdown>
+		<button type="button" class="btn btn-default btn-sm dropdown-toggle" dropdown-toggle>Visible columns <span class="caret"></span></button>
 		<ul class="dropdown-menu">
 			<li ng-repeat="browser in browsersArray"><a href="#" ng-click="ctrl.toggleBrowser(browser); $event.preventDefault()"><span class="glyphicon" ng-class="ctrl.visibleBrowsers.indexOf(browser) == -1 ? 'glyphicon-empty' : 'glyphicon-ok'"></span> {{ browser.name }} <small class="text-muted">{{ browser.campaign.campaignId }}</small></a></li>
 			<li class="divider"></li>

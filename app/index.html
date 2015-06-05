@@ -97,7 +97,7 @@
 			ng-if="!source.campaign.campaignId">{{ source.error ? 'Error
 			!' : 'Loading...' }}</span> &nbsp;
 		<button type="button" class="close"
-			ng-click="campaignsManager.removeSource($index)">
+			ng-click="campaignsManager.removeSource($index); $event.preventDefault();">
 			<span>&times;</span>
 		</button>
 		</tab-heading>
@@ -165,7 +165,7 @@
 			active="comparator.active"> <tab-heading>Comparison
 		{{$index+1}} &nbsp;
 		<button type="button" class="close"
-			ng-click="mainCtrl.removeComparator($index)">
+			ng-click="mainCtrl.removeComparator($index); $event.preventDefault();">
 			<span>&times;</span>
 		</button>
 		</tab-heading>

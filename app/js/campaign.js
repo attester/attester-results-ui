@@ -315,7 +315,7 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
                 return;
             }
             lastExecution.events.push(event);
-            var testsMap = lastExecution.testsMap;
+            var testsMap = lastExecution.testsMap || {};
             var currentTest = testsMap[event.testId];
             if (!currentTest || currentTest.finished) {
                 console.log("testFinished: Missing unfinished test " + event.testId + " in task " + event.taskId);

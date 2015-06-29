@@ -339,6 +339,23 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                         getter : this.getExecutions
                     });
 
+                    this.getErrorMsgs = function (task, browser) {
+                        var execution = executionStates.getExecution(task.browsers[browser.browserKey]);
+                        if (execution && execution.errors) {
+                            var res = execution.errors.map(function (errorEvent) {
+                                return errorEvent.error.message;
+                            });
+                            return res.join(", ");
+                        } else {
+                            return "";
+                        }
+                    };
+                    this.sortOrders.push({
+                        name : "Error messages",
+                        displayInfo : "errorMsgs",
+                        getter : this.getErrorMsgs
+                    });
+
                     this.getTaskLink = function (task) {
                         return $scope.testURL + encodeURIComponent(task.name);
                     };

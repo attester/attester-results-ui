@@ -33,6 +33,7 @@
 			<option value="result">Result</option>
 			<option value="duration">Duration</option>
 			<option value="executions">Executions</option>
+			<option value="errorMsgs">Error messages</option>
 		</select>
 	</div>
 	<div class="form-group">
@@ -139,7 +140,8 @@
 					ctrl.getExecutions(task, browser) }}</span> <span
 				ng-switch-when="duration"
 				ng-class="ctrl.getBadgeClass(task, browser)">{{
-					ctrl.getDurationText(task, browser) }}</span></td>
+					ctrl.getDurationText(task, browser) }}</span><span
+				ng-switch-when="errorMsgs">{{ ctrl.getErrorMsgs(task, browser) }}</span></td>
 		</tr>
 	</tbody>
 </table>

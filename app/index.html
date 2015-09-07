@@ -100,7 +100,7 @@
 			ng-click="campaignsManager.removeSource($index); $event.preventDefault();">
 			<span>&times;</span>
 		</button>
-		</tab-heading>
+		</tab-heading><div ng-if="source.active">
 		<div class="space"></div>
 		<button ng-if="source.campaign && source.campaign.campaignId"
 			class="pull-right btn btn-default btn-xs"
@@ -155,25 +155,27 @@
 				value="(1000 * source.resultsReceived / source.resultsTotal)"
 				max="1000" animate="false"></progressbar>
 		</div>
-		<div ng-if="source.campaign">
+		<div ng-if="source.campaign && source.resultsReceived == source.resultsTotal">
 			<tasks-table browsers-array="source.campaign.browsersArray"
 				browsers-map="source.campaign.browsersMap"
 				tasks-groups="source.campaign.tasksGroups"
+				state="source.state"
 				test-url="mainCtrl.config.testURL"></tasks-table>
 		</div>
-		</tab> <tab ng-repeat="comparator in mainCtrl.comparators"
+		</div></tab> <tab ng-repeat="comparator in mainCtrl.comparators"
 			active="comparator.active"> <tab-heading>Comparison
 		{{$index+1}} &nbsp;
 		<button type="button" class="close"
 			ng-click="mainCtrl.removeComparator($index); $event.preventDefault();">
 			<span>&times;</span>
 		</button>
-		</tab-heading>
+		</tab-heading><div ng-if="comparator.active">
 		<div class="space"></div>
 		<tasks-table browsers-array="comparator.browsersArray"
 			browsers-map="comparator.browsersMap"
 			tasks-groups="comparator.tasksGroups"
-			test-url="mainCtrl.config.testURL"></tasks-table> </tab> <tab
+			state="comparator.state"
+			test-url="mainCtrl.config.testURL"></tasks-table> </div></tab> <tab
 			active="campaignsManager.addCampaignsTabActive"> <tab-heading
 			drag-target="campaignsManager.drop($event.dragSource)"
 			drag-target-enter="campaignsManager.addCampaignsTabActive = true">

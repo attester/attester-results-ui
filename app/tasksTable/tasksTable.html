@@ -16,10 +16,10 @@
 	<div class="btn-group dropdown" dropdown>
 		<button type="button" class="btn btn-default btn-sm dropdown-toggle" dropdown-toggle>Visible columns <span class="caret"></span></button>
 		<ul class="dropdown-menu">
-			<li ng-repeat="browser in browsersArray"><a href="#" ng-click="ctrl.toggleBrowser(browser); $event.preventDefault()"><span class="glyphicon" ng-class="ctrl.visibleBrowsers.indexOf(browser) == -1 ? 'glyphicon-empty' : 'glyphicon-ok'"></span> {{ browser.name }} <small class="text-muted">{{ browser.campaign.campaignId }}</small></a></li>
+			<li ng-repeat="browser in browsersArray"><a href="#" ng-click="ctrl.toggleBrowser(browser); $event.preventDefault()"><span class="glyphicon" ng-class="state.visibleBrowsers.indexOf(browser) == -1 ? 'glyphicon-empty' : 'glyphicon-ok'"></span> {{ browser.name }} <small class="text-muted">{{ browser.campaign.campaignId }}</small></a></li>
 			<li class="divider"></li>
-			<li ng-if="ctrl.visibleBrowsers.length != browsersArray.length"><a href="#" ng-click="ctrl.visibleBrowsers = browsersArray.slice(0); $event.preventDefault()">Show all</a></li>
-			<li ng-if="ctrl.visibleBrowsers.length != 0"><a href="#" ng-click="ctrl.visibleBrowsers = []; $event.preventDefault()">Hide all</a></li>
+			<li ng-if="state.visibleBrowsers.length != browsersArray.length"><a href="#" ng-click="state.visibleBrowsers = browsersArray.slice(0); $event.preventDefault()">Show all</a></li>
+			<li ng-if="state.visibleBrowsers.length != 0"><a href="#" ng-click="state.visibleBrowsers = []; $event.preventDefault()">Hide all</a></li>
 		</ul>
 	</div>
 	<button type="button" class="btn btn-default btn-sm"
@@ -28,7 +28,7 @@
 		<span class="glyphicon glyphicon-share"></span>
 	</button>
 	<div class="form-group">
-		<select class="form-control input-sm" ng-model="ctrl.displayInfo"
+		<select class="form-control input-sm" ng-model="state.displayInfo"
 			title="Information to display">
 			<option value="result">Result</option>
 			<option value="duration">Duration</option>
@@ -39,19 +39,19 @@
 	<div class="form-group">
 		<div class="btn-group btn-group-sm" title="Lines per page">
 			<button type="button" class="btn btn-default"
-				ng-class="{active: ctrl.pageSize==10}" ng-click="ctrl.pageSize=10">10</button>
+				ng-class="{active: state.pageSize==10}" ng-click="state.pageSize=10">10</button>
 			<button type="button" class="btn btn-default"
-				ng-class="{active: ctrl.pageSize==20}" ng-click="ctrl.pageSize=20">20</button>
+				ng-class="{active: state.pageSize==20}" ng-click="state.pageSize=20">20</button>
 			<button type="button" class="btn btn-default"
-				ng-class="{active: ctrl.pageSize==40}" ng-click="ctrl.pageSize=40">40</button>
+				ng-class="{active: state.pageSize==40}" ng-click="state.pageSize=40">40</button>
 			<button type="button" class="btn btn-default"
-				ng-class="{active: ctrl.pageSize==80}" ng-click="ctrl.pageSize=80">80</button>
+				ng-class="{active: state.pageSize==80}" ng-click="state.pageSize=80">80</button>
 		</div>
 	</div>
 </div>
 
-<pagination total-items="ctrl.tasksNumber" ng-model="ctrl.currentPage"
-	items-per-page="ctrl.pageSize" max-size="10" boundary-links="true"></pagination>
+<pagination total-items="ctrl.tasksNumber" ng-model="state.currentPage"
+	items-per-page="state.pageSize" max-size="10" boundary-links="true"></pagination>
 
 <table class="table table-bordered table-hover">
 	<thead>
@@ -69,8 +69,8 @@
 		</tr>
 		<tr>
 			<td><input type="text" class="form-control input-sm"
-				placeholder="Filter tests" ng-model="ctrl.filterTestName"></td>
-			<th ng-repeat="browser in ctrl.visibleBrowsers" class="browser-header">{{browser.name}}</th>
+				placeholder="Filter tests" ng-model="state.filterTestName"></td>
+			<th ng-repeat="browser in state.visibleBrowsers" class="browser-header">{{browser.name}}</th>
 		</tr>
 		<tr>
 			<th><progress max="1000" animate="false" ng-if="ctrl.counts.total.total != 0">
@@ -80,7 +80,7 @@
 				</progress>
 				<progress max="1000" animate="false" ng-if="ctrl.counts.total.total == 0"></progress>
 			</th>
-			<th ng-repeat="browser in ctrl.visibleBrowsers" class="browser-header">
+			<th ng-repeat="browser in state.visibleBrowsers" class="browser-header">
 				<progress max="1000" animate="false" ng-if="ctrl.counts[browser.browserKey].total != 0">
 						<bar type="success" ng-if="ctrl.counts[browser.browserKey].success != 0" value="1000 * ctrl.counts[browser.browserKey].success / ctrl.counts[browser.browserKey].total" title="{{ctrl.counts[browser.browserKey].success}} successful tasks"></bar>
 						<bar type="danger" ng-if="ctrl.counts[browser.browserKey].error != 0" value="1000 * ctrl.counts[browser.browserKey].error / ctrl.counts[browser.browserKey].total" title="{{ctrl.counts[browser.browserKey].error}} failed tasks"></bar>
@@ -97,7 +97,7 @@
 				ng-click="ctrl.toggleFilterAll('ignored')"></span> <span
 				ng-class="ctrl.getFilterAllClass('waiting')"
 				ng-click="ctrl.toggleFilterAll('waiting')"></span></td>
-			<td ng-repeat="browser in ctrl.visibleBrowsers" class="task-filters"><span
+			<td ng-repeat="browser in state.visibleBrowsers" class="task-filters"><span
 				ng-class="ctrl.getFilterClass(browser, 'success')"
 				ng-click="ctrl.toggleFilter(browser, 'success')"></span> <span
 				ng-class="ctrl.getFilterClass(browser, 'error')"
@@ -131,9 +131,9 @@
 			ng-class="ctrl.getTRClass(task)">
 			<td class="task-name"><span ng-if="!testURL">{{task.name}}</span><a
 				ng-href="{{ctrl.getTaskLink(task)}}" ng-if="testURL" target="tests">{{task.name}}</a></td>
-			<td ng-repeat="browser in ctrl.visibleBrowsers"
+			<td ng-repeat="browser in state.visibleBrowsers"
 				ng-click="ctrl.taskClick(task, browser)" class="task-result"
-				ng-switch="ctrl.displayInfo"><span ng-switch-when="result"
+				ng-switch="state.displayInfo"><span ng-switch-when="result"
 				ng-class="ctrl.getIconClass(task, browser)"></span> <span
 				ng-switch-when="executions"
 				ng-class="ctrl.getBadgeClass(task, browser)">{{

@@ -26,6 +26,9 @@ angular.module("attesterLiveCampaign", ["attesterCampaign"]).factory("AttesterLi
                 liveCampaign.resultsReceived = null;
                 liveCampaign.resultsTotal = null;
 
+                var addressMatch = /^(https?:\/\/[^\/]*)(?:\/campaign([0-9]+))?$/.exec(serverAddress);
+                var socketAddress = addressMatch ? addressMatch[1] : serverAddress;
+                var campaignId = addressMatch ? addressMatch[2] || null : null;
                 var socket;
 
                 var onConnect = function () {
@@ -34,7 +37,8 @@ angular.module("attesterLiveCampaign", ["attesterCampaign"]).factory("AttesterLi
                     }
                     liveCampaign.connected = true;
                     socket.emit('hello', {
-                        type : 'viewer'
+                        type : 'viewer',
+                        campaignId : campaignId
                     });
                     notifyDataModelChange();
                 };
@@ -83,7 +87,7 @@ angular.module("attesterLiveCampaign", ["attesterCampaign"]).factory("AttesterLi
                         return;
                     }
                     resetManagers();
-                    socket = io(serverAddress, {
+                    socket = io(socketAddress, {
                         reconnection : false
                     });
                     socket.on("connect", onConnect);
@@ -95,6 +99,8 @@ angular.module("attesterLiveCampaign", ["attesterCampaign"]).factory("AttesterLi
 
                 this.type = "serverURL";
                 this.serverURL = serverAddress;
+                this.socketURL = socketAddress;
+                this.campaignId = campaignId;
                 this.disconnect = function () {
                     var mySocket = socket;
                     if (mySocket) {

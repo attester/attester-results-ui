@@ -14,7 +14,7 @@
  */
 
 angular.module("attesterCampaignChooser", ["textFieldSuggestions", "attesterCampaignsManager"]).directive("campaignChooser", [
-        "attesterCampaignsManager", function (campaignsManager) {
+        "attesterCampaignsManager", "$http", function (campaignsManager, $http) {
 
             return {
                 restrict : "E",
@@ -31,9 +31,48 @@ angular.module("attesterCampaignChooser", ["textFieldSuggestions", "attesterCamp
                             this.reportURL = $scope.reportURL || "";
                             this.serverURLs = $scope.serverURLs || [];
                             this.reportURLs = $scope.reportURLs || [];
+                            this.serverCampaigns = null;
 
                             this.submitLiveServer = function () {
-                                campaignsManager.createSourceFromServerURL(this.serverURL).active = true;
+                                var self = this;
+                                var serverURL = this.serverURL;
+                                var addressMatch = /^(https?:\/\/[^\/]*)(?:\/campaign([0-9]+))?$/.exec(serverURL);
+                                var socketAddress = addressMatch ? addressMatch[1] : null;
+                                var campaignId = addressMatch ? addressMatch[2] : null;
+                                if (!socketAddress || campaignId) {
+                                    campaignsManager.createSourceFromServerURL(serverURL).active = true;
+                                    return;
+                                }
+                                $http.jsonp(socketAddress + "/__attester__/status.json?callback=JSON_CALLBACK").then(function (result) {
+                                    var campaigns = result.data.campaigns;
+                                    if (!campaigns || campaigns.length <= 1) {
+                                        campaignsManager.createSourceFromServerURL(serverURL).active = true;
+                                    } else {
+                                        self.serverCampaigns = campaigns.map(function(campaignInfo) {
+                                            campaignInfo.selected = true;
+                                            campaignInfo.url = socketAddress + "/campaign" + campaignInfo.id;
+                                            return campaignInfo;
+                                        });
+                                    }
+                                }, function (failure) {
+                                    // probably an old server not supporting the status.json page
+                                    // falling back to the previous behavior
+                                    campaignsManager.createSourceFromServerURL(serverURL).active = true;
+                                });
+                            };
+
+                            this.submitServerCampaigns = function () {
+                                var firstTab = true;
+                                this.serverCampaigns.forEach(function (campaign) {
+                                    if (campaign.selected) {
+                                        var tab = campaignsManager.createSourceFromServerURL(campaign.url);
+                                        if (firstTab) {
+                                            firstTab = false;
+                                            tab.active = true;
+                                        }
+                                    }
+                                });
+                                this.serverCampaigns = null;
                             };
 
                             this.submitRecordedLog = function () {

@@ -219,6 +219,9 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
                 return;
             }
             var lastExecution = task.lastExecution;
+            if (!event.slave) {
+                return;
+            }
             var slave = getSlave.call(this, event.slave);
             if (!task.browser.slaves[slave.slaveKey]) {
                 task.browser.slaves[slave.slaveKey] = slave;

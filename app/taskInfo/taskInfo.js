@@ -21,11 +21,28 @@ angular.module("attesterTaskInfo", ["attesterExecutionStates", "attesterTestsDet
                 templateUrl : "taskInfo/taskInfo.html",
                 scope : {
                     task : "=",
-                    campaign : "="
+                    campaign : "=",
+                    execution : "="
                 },
                 controllerAs : "ctrl",
                 controller : ["$scope", function ($scope) {
-                    this.currentExecution = executionStates.getExecution($scope.task);
+                    this.currentExecution = function (execution) {
+                        if (execution) {
+                            $scope.execution = execution;
+                            $scope.task = execution.task;
+                        }
+                        return $scope.execution;
+                    };
+
+                    this.indexInSlave = function (value) {
+                        var currentExecution = this.currentExecution();
+                        if (value) {
+                            currentExecution = this.currentExecution(currentExecution.slave.executions[value - 1]);
+                        }
+                        return currentExecution.indexInSlave + 1;
+                    };
+
+                    this.currentExecution($scope.execution || executionStates.getExecution($scope.task));
 
                     this.getSlaveAddress = function (execution) {
                         var res = [];

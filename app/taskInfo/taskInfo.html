@@ -18,6 +18,7 @@
 		<div class="col-sm-10">
 			<select id="taskInfoSelectExecution" class="form-control"
 				ng-model="ctrl.currentExecution"
+				ng-model-options="{getterSetter: true}"
 				ng-options="ctrl.getExecutionLabel(execution) for execution in task.executions">
 			</select>
 		</div>
@@ -26,45 +27,52 @@
 		<label class="col-sm-2 control-label">State</label>
 		<div class="col-sm-10">
 			<p class="form-control-static">
-				<span ng-class="ctrl.getStateIcon(ctrl.currentExecution)"></span> {{
-				ctrl.getState(ctrl.currentExecution) }}
+				<span ng-class="ctrl.getStateIcon(ctrl.currentExecution())"></span> {{
+				ctrl.getState(ctrl.currentExecution()) }}
 			</p>
 		</div>
 	</div>
-	<div class="form-group" ng-if="ctrl.currentExecution.slave">
+	<div class="form-group" ng-if="ctrl.currentExecution().slave">
 		<label class="col-sm-2 control-label">Slave</label>
 		<div class="col-sm-10">
 			<p class="form-control-static">{{
-				ctrl.getSlaveAddress(ctrl.currentExecution) }}</p>
+				ctrl.getSlaveAddress(ctrl.currentExecution()) }}</p>
 		</div>
 	</div>
-	<div class="form-group" ng-if="ctrl.currentExecution.slave">
+	<div class="form-group" ng-if="ctrl.currentExecution().slave">
 		<label class="col-sm-2 control-label">User agent</label>
 		<div class="col-sm-10">
 			<p class="form-control-static">{{
-				ctrl.currentExecution.slave.userAgent }}</p>
+				ctrl.currentExecution().slave.userAgent }}</p>
 		</div>
 	</div>
-	<div class="form-group" ng-if="ctrl.currentExecution.started">
+	<div class="form-group" ng-if="ctrl.currentExecution().slave">
+		<label class="col-sm-2 control-label">Execution order</label>
+		<div class="col-sm-10">
+			<pagination style="margin:0;" class="pagination-sm" total-items="ctrl.currentExecution().slave.executions.length" ng-model="ctrl.indexInSlave" ng-model-options="{getterSetter:true}"
+			items-per-page="1" max-size="10" boundary-links="true" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+		</div>
+	</div>
+	<div class="form-group" ng-if="ctrl.currentExecution().started">
 		<label class="col-sm-2 control-label">Duration</label>
 		<div class="col-sm-10">
 			<p class="form-control-static">
-				{{ ctrl.getDuration(ctrl.currentExecution) }} ms <small
-					ng-if="!ctrl.currentExecution.finished" class="task-running">
+				{{ ctrl.getDuration(ctrl.currentExecution()) }} ms <small
+					ng-if="!ctrl.currentExecution().finished" class="task-running">
 					still running</small> <small> (start time:
-					{{ctrl.currentExecution.started.time | date:'medium' }})</small>
+					{{ctrl.currentExecution().started.time | date:'medium' }})</small>
 			</p>
 		</div>
 	</div>
-	<div class="panel panel-default" ng-if="ctrl.currentExecution.tests">
+	<div class="panel panel-default" ng-if="ctrl.currentExecution().tests">
 		<div class="panel-heading">Details</div>
 		<div class="panel-body">
-			<tests-details tests="ctrl.currentExecution.tests"
-				task-execution="ctrl.currentExecution" campaign="campaign"></tests-details>
+			<tests-details tests="ctrl.currentExecution().tests"
+				task-execution="ctrl.currentExecution()" campaign="campaign"></tests-details>
 		</div>
 	</div>
 	<div class="panel panel-danger"
-		ng-repeat="errorEvent in ctrl.currentExecution.errors">
+		ng-repeat="errorEvent in ctrl.currentExecution().errors">
 		<div class="panel-heading">
 			<h3 class="panel-title">
 				Error in {{ errorEvent.name || errorEvent.taskName }}<small

@@ -18,6 +18,7 @@ angular.module("attesterTaskInfoModal", ["attesterTaskInfo"]).factory("attesterT
             var taskInfoModalController = ["config", function (config) {
                         this.task = config.task;
                         this.campaign = config.campaign;
+                        this.execution = config.execution;
                     }];
 
             return function (config) {

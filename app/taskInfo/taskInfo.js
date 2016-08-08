@@ -28,6 +28,12 @@ angular.module("attesterTaskInfo", ["attesterExecutionStates", "attesterTestsDet
                 controller : ["$scope", function ($scope) {
                     this.currentExecution = function (execution) {
                         if (execution) {
+                            this.lastInSlave = false;
+                        } else if (this.lastInSlave) {
+                            var executions = $scope.execution.slave.executions;
+                            execution = executions[executions.length - 1];
+                        }
+                        if (execution) {
                             $scope.execution = execution;
                             $scope.task = execution.task;
                         }

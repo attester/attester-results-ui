@@ -20,6 +20,7 @@ module.exports = function (config) {
     var app = express();
     app.use("/", express.static(path.join(__dirname, "app")));
     app.use("/lib/angular", express.static(path.dirname(require.resolve("angular/angular.min.js"))));
+    app.use("/lib/socket.io", express.static(path.dirname(require.resolve("socket.io-client/socket.io.js"))));
     app.use("/lib/bootstrap", express.static(path.dirname(path.dirname(require.resolve("bootstrap/dist/js/bootstrap.min.js")))));
     app.get("/config.json", function (req, res) {
         res.json(config);

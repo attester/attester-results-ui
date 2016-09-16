@@ -27,8 +27,7 @@
 <body>
 	<script src="lib/socket.io/socket.io.js"></script>
 	<script type="text/javascript" src="lib/angular/angular.min.js"></script>
-	<script type="text/javascript"
-		src="lib/ui-bootstrap-tpls-0.12.1.min.js"></script>
+	<script type="text/javascript" src="lib/angular-ui-bootstrap/ui-bootstrap-tpls.js"></script>
 	<script type="text/javascript" src="js/exportFile.js"></script>
 	<script type="text/javascript" src="js/dragdrop.js"></script>
 	<script type="text/javascript" src="js/app.js"></script>
@@ -88,9 +87,9 @@
 				</div>
 			</div>
 		</div>
-		<tabset ng-if="mainCtrl.config"> <tab
+		<uib-tabset ng-if="mainCtrl.config"> <uib-tab
 			ng-repeat="source in campaignsManager.sources" active="source.active">
-		<tab-heading> <span ng-if="source.campaign.campaignId"><item-box
+		<uib-tab-heading> <span ng-if="source.campaign.campaignId"><item-box
 				drag-source="campaignsManager.getDragSourceFromCampaignSource(source)"
 				ng-style="{'background-color':campaignsManager.getCampaignColor(source.campaign)}"
 				label="source.campaign.campaignId"></item-box> </span> <span
@@ -100,7 +99,7 @@
 			ng-click="campaignsManager.removeSource($index); $event.preventDefault();">
 			<span>&times;</span>
 		</button>
-		</tab-heading><div ng-if="source.active">
+		</uib-tab-heading><div ng-if="source.active">
 		<div class="space"></div>
 		<button ng-if="source.campaign && source.campaign.campaignId"
 			class="pull-right btn btn-default btn-xs"
@@ -130,7 +129,7 @@
 		<div ng-if="!source.campaign && !source.error">
 			<span class="loading"></span> Loading...
 		</div>
-		<alert ng-if="source.error" type="danger">{{source.error}}</alert>
+		<uib-alert ng-if="source.error" type="danger">{{source.error}}</uib-alert>
 		<dl class="dl-horizontal" ng-if="source.campaign.campaignId">
 			<dt>Campaign id</dt>
 			<dd>{{source.campaign.campaignId}}</dd>
@@ -139,21 +138,21 @@
 			<dt>Last update</dt>
 			<dd>{{source.campaign.lastUpdate | date: "medium" }} ({{source.campaign.events.length}} events)</dd>
 		</dl>
-		<alert ng-if="source.campaign.mergeInfo" type="info"> <span
+		<uib-alert ng-if="source.campaign.mergeInfo" type="info"> <span
 			class="glyphicon glyphicon-info-sign"></span> This file is the result
 		of a merge operation.
 		<button type="button" class="btn btn-link"
 			ng-click="source.displayMergeInfo = !source.displayMergeInfo">{{
 			source.displayMergeInfo ? "Hide" :"Show" }} details.</button>
-		<div collapse="!source.displayMergeInfo">
+		<div uib-collapse="!source.displayMergeInfo">
 			<merge-campaigns-config-display config="source.campaign.mergeInfo"></merge-campaigns-config-display>
 		</div>
-		</alert>
+		</uib-alert>
 		<div ng-if="source.resultsReceived != source.resultsTotal">
 			Loading {{source.resultsReceived}} / {{source.resultsTotal}}<br>
-			<progressbar
+			<uib-progressbar
 				value="(1000 * source.resultsReceived / source.resultsTotal)"
-				max="1000" animate="false"></progressbar>
+				max="1000" animate="false"></uib-progressbar>
 		</div>
 		<div ng-if="source.campaign && source.resultsReceived == source.resultsTotal">
 			<tasks-table browsers-array="source.campaign.browsersArray"
@@ -162,24 +161,24 @@
 				state="source.state"
 				test-url="mainCtrl.config.testURL"></tasks-table>
 		</div>
-		</div></tab> <tab ng-repeat="comparator in mainCtrl.comparators"
-			active="comparator.active"> <tab-heading>Comparison
+		</div></uib-tab> <uib-tab ng-repeat="comparator in mainCtrl.comparators"
+			active="comparator.active"> <uib-tab-heading>Comparison
 		{{$index+1}} &nbsp;
 		<button type="button" class="close"
 			ng-click="mainCtrl.removeComparator($index); $event.preventDefault();">
 			<span>&times;</span>
 		</button>
-		</tab-heading><div ng-if="comparator.active">
+		</uib-tab-heading><div ng-if="comparator.active">
 		<div class="space"></div>
 		<tasks-table browsers-array="comparator.browsersArray"
 			browsers-map="comparator.browsersMap"
 			tasks-groups="comparator.tasksGroups"
 			state="comparator.state"
-			test-url="mainCtrl.config.testURL"></tasks-table> </div></tab> <tab
-			active="campaignsManager.addCampaignsTabActive"> <tab-heading
+			test-url="mainCtrl.config.testURL"></tasks-table> </div></uib-tab> <uib-tab
+			active="campaignsManager.addCampaignsTabActive"> <uib-tab-heading
 			drag-target="campaignsManager.drop($event.dragSource)"
 			drag-target-enter="campaignsManager.addCampaignsTabActive = true">
-		<span class="glyphicon glyphicon-plus"></span></tab-heading>
+		<span class="glyphicon glyphicon-plus"></span></uib-tab-heading>
 		<div class="space"></div>
 		<campaign-chooser server-url="mainCtrl.config.serverURL"
 			server-urls="mainCtrl.config.serverURLs"
@@ -190,7 +189,7 @@
 			on-select="mainCtrl.addComparator($comparator)"
 			campaigns="campaignsManager.getLoadedCampaigns()"></compare-campaigns-selector>
 		<div class="divider"></div>
-		</tab> </tabset>
+		</uib-tab> </uib-tabset>
 	</div>
 </body>
 </html>

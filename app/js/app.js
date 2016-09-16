@@ -14,13 +14,13 @@
  */
 
 (function () {
-    angular.module("template/tabs/tab.html",[]).run(["$templateCache", function(a){
+    angular.module("uib/template/tabs/tab.html",[]).run(["$templateCache", function(a){
         // angular-ui added, in v0.12.0, an href attribute on the <a> tag below, which broke
         // the drag & drop feature on some browsers: on Firefox, dragging an itemBox element
-        // contained inside a <tab-heading> tag drags the whole <a> tag
+        // contained inside a <uib-tab-heading> tag drags the whole <a> tag
         // the following line overrides the default template to remove the href attribute from the <a> link
-        a.put("template/tabs/tab.html",'<li ng-class="{active: active, disabled: disabled}"><a ng-click="select()" tab-heading-transclude>{{heading}}</a></li>');
-    }])
+        a.put("uib/template/tabs/tab.html",'<li ng-class="{active: active, disabled: disabled}" class="uib-tab"><a ng-click="select()" uib-tab-heading-transclude>{{heading}}</a></li>');
+    }]);
 
     var app = angular.module("attester-ui", ["attesterTasksTable", "attesterCampaignChooser", "attesterItemBox",
             "attesterMergeCampaignsConfig", "attesterMergeCampaignsConfigDisplay", "attesterCampaignsManager",

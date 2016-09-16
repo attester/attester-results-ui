@@ -33,7 +33,7 @@
 	</form>
 
 	<div ng-if="ctrl.serverCampaigns" class="row">
-		<alert close="ctrl.serverCampaigns = null;" type="info" class="col-sm-offset-4 col-sm-5">
+		<uib-alert close="ctrl.serverCampaigns = null;" type="info" class="col-sm-offset-4 col-sm-5">
 			<strong>Multiple campaigns are available on this server.</strong> Please select the ones you would like to open:
 			<div ng-repeat="campaign in ctrl.serverCampaigns" class="checkbox">
 				<label>
@@ -44,7 +44,7 @@
 				</label>
 			</div>
 			<button type="button" class="btn btn-primary pull-right" ng-click="ctrl.submitServerCampaigns()">OK</button>
-		</alert>
+		</uib-alert>
 	</div>
 
 	<form class="form-horizontal" role="formRecordedLog"

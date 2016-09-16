@@ -13,8 +13,8 @@
     limitations under the License.
  -->
 <div class="form-inline pull-right" style="margin: 20px 0;">
-	<div class="btn-group dropdown" dropdown>
-		<button type="button" class="btn btn-default btn-sm dropdown-toggle" dropdown-toggle>Visible columns <span class="caret"></span></button>
+	<div class="btn-group dropdown" uib-dropdown>
+		<button type="button" class="btn btn-default btn-sm dropdown-toggle" uib-dropdown-toggle>Visible columns <span class="caret"></span></button>
 		<ul class="dropdown-menu">
 			<li ng-repeat="browser in browsersArray"><a href="#" ng-click="ctrl.toggleBrowser(browser); $event.preventDefault()"><span class="glyphicon" ng-class="state.visibleBrowsers.indexOf(browser) == -1 ? 'glyphicon-empty' : 'glyphicon-ok'"></span> {{ browser.name }} <small class="text-muted">{{ browser.campaign.campaignId }}</small></a></li>
 			<li class="divider"></li>
@@ -50,8 +50,8 @@
 	</div>
 </div>
 
-<pagination total-items="ctrl.tasksNumber" ng-model="state.currentPage"
-	items-per-page="state.pageSize" max-size="10" boundary-links="true"></pagination>
+<uib-pagination total-items="ctrl.tasksNumber" ng-model="state.currentPage"
+	items-per-page="state.pageSize" max-size="10" boundary-links="true"></uib-pagination>
 
 <table class="table table-bordered table-hover">
 	<thead>
@@ -73,19 +73,19 @@
 			<th ng-repeat="browser in state.visibleBrowsers" class="browser-header">{{browser.name}}</th>
 		</tr>
 		<tr>
-			<th><progress max="1000" animate="false" ng-if="ctrl.counts.total.total != 0">
-						<bar type="success" ng-if="ctrl.counts.total.success != 0" value="1000 * ctrl.counts.total.success / ctrl.counts.total.total" title="{{ctrl.counts.total.success}} successful tasks"></bar>
-						<bar type="danger" ng-if="ctrl.counts.total.error != 0" value="1000 * ctrl.counts.total.error / ctrl.counts.total.total" title="{{ctrl.counts.total.error}} failed tasks"></bar>
-						<bar type="warning" ng-if="ctrl.counts.total.ignored != 0" value="1000 * ctrl.counts.total.ignored / ctrl.counts.total.total" title="{{ctrl.counts.total.ignored}} ignored tasks"></bar>
-				</progress>
-				<progress max="1000" animate="false" ng-if="ctrl.counts.total.total == 0"></progress>
+			<th><uib-progress max="1000" animate="false" ng-if="ctrl.counts.total.total != 0">
+						<uib-bar type="success" ng-if="ctrl.counts.total.success != 0" value="1000 * ctrl.counts.total.success / ctrl.counts.total.total" title="{{ctrl.counts.total.success}} successful tasks"></uib-bar>
+						<uib-bar type="danger" ng-if="ctrl.counts.total.error != 0" value="1000 * ctrl.counts.total.error / ctrl.counts.total.total" title="{{ctrl.counts.total.error}} failed tasks"></uib-bar>
+						<uib-bar type="warning" ng-if="ctrl.counts.total.ignored != 0" value="1000 * ctrl.counts.total.ignored / ctrl.counts.total.total" title="{{ctrl.counts.total.ignored}} ignored tasks"></uib-bar>
+				</uib-progress>
+				<uib-progress max="1000" animate="false" ng-if="ctrl.counts.total.total == 0"></uib-progress>
 			</th>
 			<th ng-repeat="browser in state.visibleBrowsers" class="browser-header">
-				<progress max="1000" animate="false" ng-if="ctrl.counts[browser.browserKey].total != 0">
-						<bar type="success" ng-if="ctrl.counts[browser.browserKey].success != 0" value="1000 * ctrl.counts[browser.browserKey].success / ctrl.counts[browser.browserKey].total" title="{{ctrl.counts[browser.browserKey].success}} successful tasks"></bar>
-						<bar type="danger" ng-if="ctrl.counts[browser.browserKey].error != 0" value="1000 * ctrl.counts[browser.browserKey].error / ctrl.counts[browser.browserKey].total" title="{{ctrl.counts[browser.browserKey].error}} failed tasks"></bar>
-						<bar type="warning" ng-if="ctrl.counts[browser.browserKey].ignored != 0" value="1000 * ctrl.counts[browser.browserKey].ignored / ctrl.counts[browser.browserKey].total" title="{{ctrl.counts[browser.browserKey].ignored}} ignored tasks"></bar>
-				</progress></th>
+				<uib-progress max="1000" animate="false" ng-if="ctrl.counts[browser.browserKey].total != 0">
+						<uib-bar type="success" ng-if="ctrl.counts[browser.browserKey].success != 0" value="1000 * ctrl.counts[browser.browserKey].success / ctrl.counts[browser.browserKey].total" title="{{ctrl.counts[browser.browserKey].success}} successful tasks"></uib-bar>
+						<uib-bar type="danger" ng-if="ctrl.counts[browser.browserKey].error != 0" value="1000 * ctrl.counts[browser.browserKey].error / ctrl.counts[browser.browserKey].total" title="{{ctrl.counts[browser.browserKey].error}} failed tasks"></uib-bar>
+						<uib-bar type="warning" ng-if="ctrl.counts[browser.browserKey].ignored != 0" value="1000 * ctrl.counts[browser.browserKey].ignored / ctrl.counts[browser.browserKey].total" title="{{ctrl.counts[browser.browserKey].ignored}} ignored tasks"></uib-bar>
+				</uib-progress></th>
 		</tr>
 		<tr>
 			<td class="task-filters"><span
@@ -108,8 +108,8 @@
 				ng-click="ctrl.toggleFilter(browser, 'waiting')"></span>
 				<div class="divider"></div>
 				<span ng-class="ctrl.getSortIcon(browser)" ng-click="ctrl.setSortOrder(browser)"></span>
-				<span class="dropdown" dropdown>
-					<button class="btn btn-default btn-xs" type="button" dropdown-toggle>
+				<span class="dropdown" uib-dropdown>
+					<button class="btn btn-default btn-xs" type="button" uib-dropdown-toggle>
 						<span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu dropdown-menu-right">

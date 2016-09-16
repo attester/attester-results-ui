@@ -49,8 +49,8 @@
 	<div class="form-group" ng-if="ctrl.currentExecution().slave">
 		<label class="col-sm-2 control-label">Execution order</label>
 		<div class="col-sm-10">
-			<pagination style="margin:0;vertical-align:middle;" class="pagination-sm" total-items="ctrl.currentExecution().slave.executions.length" ng-model="ctrl.indexInSlave" ng-model-options="{getterSetter:true}"
-			items-per-page="1" max-size="10" boundary-links="true" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+			<uib-pagination style="margin:0;vertical-align:middle;" class="pagination-sm" total-items="ctrl.currentExecution().slave.executions.length" ng-model="ctrl.indexInSlave" ng-model-options="{getterSetter:true}"
+			items-per-page="1" max-size="10" boundary-links="true" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></uib-pagination>
 			<label class="checkbox-inline" style="margin-left:10px;">
 				<input type="checkbox" ng-model="ctrl.lastInSlave"> Stay on last
 			</label>
@@ -89,7 +89,7 @@
 				<button style="margin: 3px 0px;" class="btn btn-link btn-xs"
 					ng-click="errorEvent.error.stack.$displayed = !errorEvent.error.stack.$displayed">
 					{{errorEvent.error.stack.$displayed ? 'Hide' : 'Show' }} stack</button>
-				<ul collapse="!errorEvent.error.stack.$displayed">
+				<ul uib-collapse="!errorEvent.error.stack.$displayed">
 					<li ng-repeat="stackItem in errorEvent.error.stack">
 						<div>
 							Function:

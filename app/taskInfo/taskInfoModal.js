@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
-angular.module("attesterTaskInfoModal", ["attesterTaskInfo"]).factory("attesterTaskInfoModal", ["$modal",
-        function ($modal) {
+angular.module("attesterTaskInfoModal", ["attesterTaskInfo"]).factory("attesterTaskInfoModal", ["$uibModal",
+        function ($uibModal) {
             var taskInfoModalController = ["config", function (config) {
                         this.task = config.task;
                         this.campaign = config.campaign;
@@ -22,7 +22,7 @@ angular.module("attesterTaskInfoModal", ["attesterTaskInfo"]).factory("attesterT
                     }];
 
             return function (config) {
-                $modal.open({
+                $uibModal.open({
                     templateUrl : 'taskInfo/taskInfoModal.html',
                     controllerAs : "ctrl",
                     controller : taskInfoModalController,

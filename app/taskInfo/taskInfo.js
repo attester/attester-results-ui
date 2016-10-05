@@ -95,6 +95,13 @@ angular.module("attesterTaskInfo", ["attesterExecutionStates", "attesterTestsDet
                         }
                         return res.join("");
                     };
+
+                    this.logLevelClass = {
+                        "log": "",
+                        "info": "text-info",
+                        "warn": "text-warning",
+                        "error": "text-danger"
+                    };
                 }]
             };
         }]);

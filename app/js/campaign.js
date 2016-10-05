@@ -274,6 +274,17 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
                 currentTest.errors.push(event);
             }
         },
+        "log" : function (event) {
+            var lastExecution = getLastExecution.call(this, event);
+            if (!lastExecution) {
+                return;
+            }
+            if (!lastExecution.logs) {
+                lastExecution.logs = [];
+            }
+            lastExecution.events.push(event);
+            lastExecution.logs.push(event);
+        },
         "testStarted" : function (event) {
             var lastExecution = getLastExecution.call(this, event);
             if (!lastExecution) {

@@ -105,4 +105,12 @@
 			</div>
 		</div>
 	</div>
+	<div class="panel panel-default" ng-if="ctrl.currentExecution().logs">
+		<div class="panel-heading">
+			<h3 class="panel-title">Logs</h3>
+		</div>
+		<div class="panel-body">
+			<pre ng-repeat="logEvent in ctrl.currentExecution().logs" ng-class="ctrl.logLevelClass[logEvent.level]">{{logEvent.time | date:'medium' }} [console.{{ logEvent.level }}] {{ logEvent.message }}</pre>
+		</div>
+	</div>
 </form>

@@ -97,6 +97,7 @@ angular.module("attesterTaskInfo", ["attesterExecutionStates", "attesterTestsDet
                     };
 
                     this.logLevelClass = {
+                        "debug": "",
                         "log": "",
                         "info": "text-info",
                         "warn": "text-warning",

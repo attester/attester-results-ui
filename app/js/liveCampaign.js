@@ -36,10 +36,10 @@ angular.module("attesterLiveCampaign", ["attesterCampaign"]).factory("AttesterLi
                         return;
                     }
                     liveCampaign.connected = true;
-                    socket.emit('hello', {
+                    socket.send(JSON.stringify({
                         type : 'viewer',
                         campaignId : campaignId
-                    });
+                    }));
                     notifyDataModelChange();
                 };
                 var onFirstResults = function (event) {
@@ -48,7 +48,7 @@ angular.module("attesterLiveCampaign", ["attesterCampaign"]).factory("AttesterLi
                     }
                     liveCampaign.resultsReceived = event.transmitted;
                     liveCampaign.resultsTotal = event.total;
-                    socket.emit("firstResults");
+                    socket.send('{"type":"firstResults"}');
                     notifyDataModelChange();
                 };
                 var onResult = function (event) {
@@ -61,24 +61,22 @@ angular.module("attesterLiveCampaign", ["attesterCampaign"]).factory("AttesterLi
                         liveCampaign.resultsReceived = 0;
                         liveCampaign.resultsTotal = 1;
                     }
-                    campaign.addEvent(event);
+                    campaign.addEvent(event.result);
                     notifyDataModelChange();
-                };
-                var onConnectError = function () {
-                    if (socket && !liveCampaign.campaign) {
-                        setTimeout(connect, 2000);
-                    }
                 };
                 var onDisconnect = function () {
                     liveCampaign.connected = false;
                     notifyDataModelChange();
-                    onConnectError();
+                    if (socket && !liveCampaign.campaign) {
+                        setTimeout(connect, 2000);
+                    }
                 };
-
-                var resetManagers = function () {
-                    var managers = io.managers;
-                    for (var address in managers) {
-                        delete managers[address];
+                var onMessage = function (message) {
+                    var data = JSON.parse(message.data);
+                    if (data.type === "firstResults") {
+                        onFirstResults(data);
+                    } else if (data.type === "result") {
+                        onResult(data);
                     }
                 };
 
@@ -86,15 +84,10 @@ angular.module("attesterLiveCampaign", ["attesterCampaign"]).factory("AttesterLi
                     if (!socket) {
                         return;
                     }
-                    resetManagers();
-                    socket = io(socketAddress, {
-                        reconnection : false
-                    });
-                    socket.on("connect", onConnect);
-                    socket.on("firstResults", onFirstResults);
-                    socket.on("result", onResult);
-                    socket.on("disconnect", onDisconnect);
-                    socket.on("connect_error", onConnectError);
+                    socket = new SockJS(socketAddress.replace(/\/?$/, '/sockjs'));
+                    socket.onopen = onConnect;
+                    socket.onmessage = onMessage;
+                    socket.onclose = onDisconnect;
                 }
 
                 this.type = "serverURL";
@@ -106,7 +99,7 @@ angular.module("attesterLiveCampaign", ["attesterCampaign"]).factory("AttesterLi
                     if (mySocket) {
                         socket = null;
                         setTimeout(function () {
-                            mySocket.disconnect();
+                            mySocket.close();
                         });
                     }
                 };

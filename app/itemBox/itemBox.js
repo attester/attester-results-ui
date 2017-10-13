@@ -13,7 +13,9 @@
  * limitations under the License.
  */
 
-angular.module("attesterItemBox", []).directive("itemBox", function () {
+angular.module("attesterItemBox", []).run(["$templateCache", function($templateCache) {
+    $templateCache.put("itemBox/itemBox.html", require("./itemBox.html"));
+}]).directive("itemBox", function () {
     return {
         restrict : "E",
         transclude : true,

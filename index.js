@@ -18,11 +18,7 @@ var express = require("express");
 
 module.exports = function (config) {
     var app = express();
-    app.use("/", express.static(path.join(__dirname, "app")));
-    app.use("/lib/angular", express.static(path.dirname(require.resolve("angular/angular.min.js"))));
-    app.use("/lib/angular-ui-bootstrap", express.static(path.dirname(require.resolve("angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"))));
-    app.use("/lib/sockjs", express.static(path.dirname(require.resolve("sockjs-client/dist/sockjs.min.js"))));
-    app.use("/lib/bootstrap", express.static(path.dirname(path.dirname(require.resolve("bootstrap/dist/js/bootstrap.min.js")))));
+    app.use("/", express.static(path.join(__dirname, "dist")));
     app.get("/config.json", function (req, res) {
         res.json(config);
     });

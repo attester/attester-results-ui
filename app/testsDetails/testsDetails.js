@@ -13,7 +13,9 @@
  * limitations under the License.
  */
 
-angular.module("attesterTestsDetails", []).directive("testsDetails", ["$compile", function ($compile) {
+angular.module("attesterTestsDetails", []).run(["$templateCache", function($templateCache) {
+    $templateCache.put("testsDetails/testsDetails.html", require("./testsDetails.html"));
+}]).directive("testsDetails", ["$compile", function ($compile) {
 
             var hasError = function (test) {
                 if (test.errors) {

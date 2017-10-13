@@ -13,7 +13,9 @@
  * limitations under the License.
  */
 
-angular.module("textFieldSuggestions", []).directive("textFieldSuggestions", function () {
+angular.module("textFieldSuggestions", []).run(["$templateCache", function($templateCache) {
+    $templateCache.put("textFieldSuggestions/textFieldSuggestions.html", require("./textFieldSuggestions.html"));
+}]).directive("textFieldSuggestions", function () {
 
     return {
         restrict : "E",

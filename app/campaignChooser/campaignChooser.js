@@ -13,7 +13,9 @@
  * limitations under the License.
  */
 
-angular.module("attesterCampaignChooser", ["textFieldSuggestions", "attesterCampaignsManager"]).directive("campaignChooser", [
+angular.module("attesterCampaignChooser", ["textFieldSuggestions", "attesterCampaignsManager"]).run(["$templateCache", function($templateCache) {
+    $templateCache.put("campaignChooser/campaignChooser.html", require("./campaignChooser.html"));
+}]).directive("campaignChooser", [
         "attesterCampaignsManager", "$http", function (campaignsManager, $http) {
 
             return {

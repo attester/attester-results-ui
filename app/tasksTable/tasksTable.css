@@ -64,7 +64,7 @@ td.task-result:hover {
 }
 
 .loading {
-	background-image: url(/images/loading.gif);
+	background-image: url(../images/loading.gif);
 	display: inline-block;
 	vertical-align: middle;
 	margin: 4px;

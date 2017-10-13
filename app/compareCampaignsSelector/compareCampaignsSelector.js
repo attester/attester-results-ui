@@ -13,7 +13,9 @@
  * limitations under the License.
  */
 
-angular.module("attesterCompareCampaignsSelector", ["attesterCampaignsComparator"]).directive("compareCampaignsSelector", [
+angular.module("attesterCompareCampaignsSelector", ["attesterCampaignsComparator"]).run(["$templateCache", function($templateCache) {
+    $templateCache.put("compareCampaignsSelector/compareCampaignsSelector.html", require("./compareCampaignsSelector.html"));
+}]).directive("compareCampaignsSelector", [
         "AttesterCampaignsComparator", function (AttesterCampaignsComparator) {
 
             return {

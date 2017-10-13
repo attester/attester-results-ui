@@ -13,7 +13,9 @@
  * limitations under the License.
  */
 
-angular.module("attesterTaskInfoModal", ["attesterTaskInfo"]).factory("attesterTaskInfoModal", ["$uibModal",
+angular.module("attesterTaskInfoModal", ["attesterTaskInfo"]).run(["$templateCache", function($templateCache) {
+    $templateCache.put("taskInfo/taskInfoModal.html", require("./taskInfoModal.html"));
+}]).factory("attesterTaskInfoModal", ["$uibModal",
         function ($uibModal) {
             var taskInfoModalController = ["config", function (config) {
                         this.task = config.task;

@@ -13,8 +13,11 @@
  * limitations under the License.
  */
 
+
 angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutionStates", "attesterCampaignsManager",
-        "attesterItemBox", "exportFile", "attesterMergeCampaignsConfig"]).directive("tasksTable", [
+        "attesterItemBox", "exportFile", "attesterMergeCampaignsConfig"]).run(["$templateCache", function($templateCache) {
+        $templateCache.put("tasksTable/tasksTable.html", require("./tasksTable.html"));
+    }]).directive("tasksTable", [
         "attesterTaskInfoModal",
         "AttesterExecutionStates",
         "exportFile",

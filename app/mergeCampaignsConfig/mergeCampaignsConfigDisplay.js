@@ -13,7 +13,9 @@
  * limitations under the License.
  */
 
-angular.module("attesterMergeCampaignsConfigDisplay", ["attesterItemBox", "attesterCampaignsManager"]).directive("mergeCampaignsConfigDisplay", [
+angular.module("attesterMergeCampaignsConfigDisplay", ["attesterItemBox", "attesterCampaignsManager"]).run(["$templateCache", function($templateCache) {
+    $templateCache.put("mergeCampaignsConfig/mergeCampaignsConfigDisplay.html", require("./mergeCampaignsConfigDisplay.html"));
+}]).directive("mergeCampaignsConfigDisplay", [
         "attesterCampaignsManager", function (attesterCampaignsManager) {
 
             return {

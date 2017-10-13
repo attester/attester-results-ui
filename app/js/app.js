@@ -28,6 +28,7 @@
 
     app.controller("MainViewController", ["$http", "$scope", "attesterCampaignsManager", "exportFile", "AttesterExecutionStates",
             function ($http, $scope, campaignsManager, exportFile, executionStates) {
+                document.body.style.display = "";
                 var ctrl = this;
 
                 $scope.campaignsManager = campaignsManager;

@@ -13,7 +13,9 @@
  * limitations under the License.
  */
 
-angular.module("attesterMergeCampaignsConfig", ["attesterMergeCampaigns", "attesterItemBox", "attesterCampaignsManager"]).factory("mergeCampaignsConfigService", [
+angular.module("attesterMergeCampaignsConfig", ["attesterMergeCampaigns", "attesterItemBox", "attesterCampaignsManager"]).run(["$templateCache", function($templateCache) {
+    $templateCache.put("mergeCampaignsConfig/mergeCampaignsConfig.html", require("./mergeCampaignsConfig.html"));
+}]).factory("mergeCampaignsConfigService", [
         "$timeout", "attesterMergeCampaigns", "attesterCampaignsManager",
         function ($timeout, attesterMergeCampaigns, campaignsManager) {
 

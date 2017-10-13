@@ -5,28 +5,37 @@
   "author": "ariatemplates <contact@ariatemplates.com> (http://github.com/ariatemplates)",
   "license": "Apache-2.0",
   "devDependencies": {
+    "angular": "~1.5.8",
     "angular-mocks": "~1.5.8",
+    "angular-ui-bootstrap": "1.1.2",
+    "bootstrap": "~3.3.7",
     "chai": "~3.5.0",
+    "css-loader": "^0.28.7",
+    "extract-loader": "^1.0.1",
+    "extract-text-webpack-plugin": "^3.0.1",
+    "file-loader": "^1.1.5",
+    "html-loader": "^0.5.1",
     "karma": "~1.3.0",
     "karma-chai": "~0.1.0",
     "karma-cli": "~1.0.1",
     "karma-firefox-launcher": "~1.0.0",
     "karma-mocha": "~1.1.1",
-    "mocha": "~3.0.2"
+    "karma-webpack": "^2.0.5",
+    "mocha": "~3.0.2",
+    "sockjs-client": "^1.1.4",
+    "webpack": "^3.7.1"
   },
   "dependencies": {
-    "angular": "~1.5.8",
-    "angular-ui-bootstrap": "1.1.2",
-    "bootstrap": "~3.3.7",
     "express": "~4.14.0",
     "glob": "~4.3.5",
-    "optimist": "~0.6.1",
-    "sockjs-client": "^1.1.4"
+    "optimist": "~0.6.1"
   },
   "scripts": {
+    "prepare": "webpack --optimize-minimize",
     "start": "node cli.js",
     "karma": "karma start karma.conf.js",
-    "test": "npm run karma"
+    "test": "npm run karma",
+    "webpack": "webpack"
   },
   "bin": {
     "attester-results-ui": "bin/attester-results-ui.js"

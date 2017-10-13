@@ -13,7 +13,9 @@
  * limitations under the License.
  */
 
-angular.module("attesterTaskInfo", ["attesterExecutionStates", "attesterTestsDetails"]).directive("taskInfo", [
+angular.module("attesterTaskInfo", ["attesterExecutionStates", "attesterTestsDetails"]).run(["$templateCache", function($templateCache) {
+    $templateCache.put("taskInfo/taskInfo.html", require("./taskInfo.html"));
+}]).directive("taskInfo", [
         "AttesterExecutionStates", function (executionStates) {
 
             return {

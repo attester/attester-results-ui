@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
+var SockJS = require("sockjs-client");
+
 angular.module("attesterLiveCampaign", ["attesterCampaign"]).factory("AttesterLiveCampaign", ["AttesterCampaign",
         "$rootScope", function (AttesterCampaign, $rootScope) {
             var notifyDataModelChange = function () {

@@ -54,11 +54,24 @@ var main = function () {
         }));
     }
 
+    var argToArray = function (argName) {
+        var value = argv[argName];
+        if (Array.isArray(value)) {
+            return value;
+        } else if (value != null) {
+            return [String(value)];
+        } else {
+            return [];
+        }
+    };
+
     var app = attesterResultsUI({
         testURL : argv["test-url"],
         serverURL : argv["server-url"],
         reportURL : argv["report-url"],
-        reportURLs : reportsURLs
+        reportURLs : reportsURLs,
+        loadServerURLs : argToArray("load-server-url"),
+        loadReportURLs : argToArray("load-report-url")
     });
 
     var port = argv.port;

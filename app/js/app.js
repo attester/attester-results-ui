@@ -71,6 +71,17 @@
                         }
                     }
                     ctrl.config = config;
+
+                    (config.loadServerURLs || []).forEach(function (url) {
+                        autoLoadedTabs.push(campaignsManager.createSourceFromServerURL(url));
+                    });
+                    (config.loadReportURLs || []).forEach(function (url) {
+                        autoLoadedTabs.push(campaignsManager.createSourceFromReportURL(url));
+                    });
+
+                    if (autoLoadedTabs.length > 0) {
+                        autoLoadedTabs[0].active = true;
+                    }
                 });
             }]);
 })();

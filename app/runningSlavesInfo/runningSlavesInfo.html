@@ -1,0 +1,44 @@
+<!--
+    Copyright 2018 Amadeus s.a.s.
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+ -->
+
+<table class="running-slaves table table-bordered table-hover" ng-if="source.connected && source.campaign && source.campaign.getRunningSlaves().length !== 0">
+    <thead>
+        <tr>
+            <th>Running slaves</th>
+            <th>Current task</th>
+            <th colspan="{{ctrl.lastExecutions.length}}">Previous tasks</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="slave in source.campaign.getRunningSlaves() track by slave.slaveKey">
+            <td>
+                <b title="{{slave.userAgent}}">{{slave.currentExecution.task.browser.name}}</b><br>
+                <small><span title="{{slave.address}}">{{slave.addressName || slave.address}}</span>, port {{slave.port}}</small>
+            </td>
+            <td ng-click="ctrl.executionClick(slave.currentExecution)" class="current-execution">
+                {{slave.currentExecution.task.taskGroup.name}}
+                <span ng-class="ctrl.getIconClass(slave.currentExecution)"></span>
+            </td>
+            <td ng-repeat="lastExecutionIndex in ctrl.lastExecutions"
+                ng-init="lastExecution = slave.executions[slave.executions.length - lastExecutionIndex]"
+                ng-click="ctrl.executionClick(lastExecution)"
+                title="{{lastExecution ? lastExecution.task.taskGroup.name : ''}}"
+                class="previous-execution"
+            >
+                <span ng-class="ctrl.getIconClass(lastExecution)"></span><br>
+            </td>
+        </tr>
+    </tbody>
+</table>

@@ -3,6 +3,7 @@ require("./general.css");
 require("./testsDetails/testsDetails.css");
 require("./executionStates/executionStates.css");
 require("./tasksTable/tasksTable.css");
+require("./runningSlavesInfo/runningSlavesInfo.css");
 require("./itemBox/itemBox.css");
 
 require("angular/angular.min.js");
@@ -19,6 +20,7 @@ require("./itemBox/itemBox.js");
 require("./executionStates/executionStates.js");
 require("./testsDetails/testsDetails.js");
 require("./taskInfo/taskInfo.js");
+require("./runningSlavesInfo/runningSlavesInfo.js");
 require("./taskInfo/taskInfoModal.js");
 require("./tasksTable/tasksTable.js");
 require("./campaignChooser/campaignChooser.js");

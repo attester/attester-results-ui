@@ -24,7 +24,7 @@
 
     var app = angular.module("attester-ui", ["attesterTasksTable", "attesterCampaignChooser", "attesterItemBox",
             "attesterMergeCampaignsConfig", "attesterMergeCampaignsConfigDisplay", "attesterCampaignsManager",
-            "attesterCompareCampaignsSelector", "attesterExecutionStates", "ui.bootstrap", "dragdrop", "exportFile"]);
+            "attesterCompareCampaignsSelector", "attesterExecutionStates", "attesterRunningSlavesInfo", "ui.bootstrap", "dragdrop", "exportFile"]);
 
     app.controller("MainViewController", ["$http", "$scope", "attesterCampaignsManager", "exportFile", "AttesterExecutionStates",
             function ($http, $scope, campaignsManager, exportFile, executionStates) {

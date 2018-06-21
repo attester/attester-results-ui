@@ -180,7 +180,8 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
                 address : slaveInfo.address,
                 port : slaveInfo.port,
                 userAgent : slaveInfo.userAgent,
-                executions : []
+                executions : [],
+                currentExecution: null
             };
             this.slavesArray.push(slave);
         }
@@ -188,6 +189,11 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
             slave.addressName = slaveInfo.addressName;
         }
         return slave;
+    };
+
+    var setSlaveCurrentExecution = function (slave, currentExecution) {
+        slave.currentExecution = currentExecution;
+        this.runningSlaves = null;
     };
 
     var processEvents = {
@@ -200,6 +206,7 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
             this.tasksMap = {};
             this.slavesMap = {};
             this.slavesArray = [];
+            this.runningSlaves = [];
             var tasks = event.tasks;
             this.tasksTree = tasks;
             tasks.forEach(processTask.bind(this, null));
@@ -228,6 +235,7 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
             }
             var indexInSlave = slave.executions.length;
             slave.executions[indexInSlave] = lastExecution;
+            setSlaveCurrentExecution.call(this, slave, lastExecution);
             lastExecution.slave = slave;
             lastExecution.indexInSlave = indexInSlave;
         },
@@ -238,6 +246,10 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
             var task = storeTaskStateChangingEvent.call(this, event, "finished");
             if (!task) {
                 return;
+            }
+            var slave = task.lastExecution.slave;
+            if (slave && slave.currentExecution === task.lastExecution) {
+                setSlaveCurrentExecution.call(this, slave, null);
             }
             if (event.restartPlanned) {
                 var indexInTask = task.executions.length;
@@ -401,6 +413,16 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
         var data = JSON.parse(sourceContent);
         this.addEvents(data);
         this.contentAsString = sourceContent;
+    };
+
+    AttesterCampaign.prototype.getRunningSlaves = function () {
+        var runningSlaves = this.runningSlaves;
+        if (!runningSlaves) {
+            this.runningSlaves = this.slavesArray.filter(function (slave) {
+                return slave.currentExecution;
+            });
+        }
+        return this.runningSlaves;
     };
 
     return AttesterCampaign;

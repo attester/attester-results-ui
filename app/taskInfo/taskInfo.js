@@ -101,9 +101,9 @@ angular.module("attesterTaskInfo", ["attesterExecutionStates", "attesterTestsDet
                     this.logLevelClass = {
                         "debug": "",
                         "log": "",
-                        "info": "text-info",
-                        "warn": "text-warning",
-                        "error": "text-danger"
+                        "info": "bg-info",
+                        "warn": "bg-warning",
+                        "error": "bg-danger"
                     };
                 }]
             };

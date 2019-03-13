@@ -3,6 +3,7 @@ require("./general.css");
 require("./testsDetails/testsDetails.css");
 require("./executionStates/executionStates.css");
 require("./tasksTable/tasksTable.css");
+require("./taskInfo/taskInfo.css");
 require("./runningSlavesInfo/runningSlavesInfo.css");
 require("./itemBox/itemBox.css");
 

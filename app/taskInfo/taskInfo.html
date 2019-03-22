@@ -60,7 +60,7 @@
 		<label class="col-sm-2 control-label">Duration</label>
 		<div class="col-sm-10">
 			<p class="form-control-static">
-				{{ ctrl.getDuration(ctrl.currentExecution()) }} ms <small
+				{{ ctrl.getDuration(ctrl.currentExecution()) | duration }}  <small
 					ng-if="!ctrl.currentExecution().finished" class="task-running">
 					still running</small> <small> (start time:
 					{{ctrl.currentExecution().started.time | date:'medium' }})</small>

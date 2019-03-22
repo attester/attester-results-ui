@@ -15,6 +15,7 @@ require("./js/app.js");
 require("./js/campaignsManager.js");
 require("./js/campaign.js");
 require("./js/comparator.js");
+require("./js/durationFilter.js");
 require("./js/mergeCampaigns.js");
 require("./js/liveCampaign.js");
 require("./itemBox/itemBox.js");

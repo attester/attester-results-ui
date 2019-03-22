@@ -18,7 +18,7 @@
 		ng-class="ctrl.getTestClass(currentTest)"><span
 			class="test-name">{{currentTest.name}}<span
 				ng-if="currentTest.method"> - {{currentTest.method}}</span></span><small>
-				<span>- {{ctrl.getDuration(currentTest)}} ms <span
+				<span>- {{ctrl.getDuration(currentTest) | duration}} <span
 					ng-if="!currentTest.finished && taskExecution.finished"
 					class="test-error">interrupted</span><span
 					ng-if="!currentTest.finished && !taskExecution.finished"

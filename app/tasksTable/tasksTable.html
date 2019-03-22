@@ -140,7 +140,7 @@
 					ctrl.getExecutions(task, browser) }}</span> <span
 				ng-switch-when="duration"
 				ng-class="ctrl.getBadgeClass(task, browser)">{{
-					ctrl.getDurationText(task, browser) }}</span><span
+					ctrl.getDuration(task, browser) | duration }}</span><span
 				ng-switch-when="errorMsgs">{{ ctrl.getErrorMsgs(task, browser) }}</span></td>
 		</tr>
 	</tbody>

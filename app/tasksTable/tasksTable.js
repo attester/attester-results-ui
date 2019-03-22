@@ -331,11 +331,6 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                         displayInfo : "duration",
                         getter : this.getDuration
                     });
-                    this.getDurationText = function (task, browser) {
-                        var res = this.getDuration(task, browser);
-                        return res >= 0 ? res + " ms" : "";
-                    };
-
                     this.getExecutions = function (task, browser) {
                         var browserTask = task.browsers[browser.browserKey];
                         if (browserTask) {

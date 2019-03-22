@@ -22,7 +22,7 @@
         a.put("uib/template/tabs/tab.html",'<li ng-class="{active: active, disabled: disabled}" class="uib-tab"><a ng-click="select()" uib-tab-heading-transclude>{{heading}}</a></li>');
     }]);
 
-    var app = angular.module("attester-ui", ["attesterTasksTable", "attesterCampaignChooser", "attesterItemBox",
+    var app = angular.module("attester-ui", ["attesterTasksTable", "attesterCampaignChooser", "attesterDurationFilter", "attesterItemBox",
             "attesterMergeCampaignsConfig", "attesterMergeCampaignsConfigDisplay", "attesterCampaignsManager",
             "attesterCompareCampaignsSelector", "attesterExecutionStates", "attesterRunningSlavesInfo", "ui.bootstrap", "dragdrop", "exportFile"]);
 

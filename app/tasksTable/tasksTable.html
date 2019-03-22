@@ -73,18 +73,18 @@
 			<th ng-repeat="browser in state.visibleBrowsers" class="browser-header">{{browser.name}}</th>
 		</tr>
 		<tr>
-			<th><uib-progress max="1000" animate="false" ng-if="ctrl.counts.total.total != 0">
-						<uib-bar type="success" ng-if="ctrl.counts.total.success != 0" value="1000 * ctrl.counts.total.success / ctrl.counts.total.total" title="{{ctrl.counts.total.success}} successful tasks"></uib-bar>
-						<uib-bar type="danger" ng-if="ctrl.counts.total.error != 0" value="1000 * ctrl.counts.total.error / ctrl.counts.total.total" title="{{ctrl.counts.total.error}} failed tasks"></uib-bar>
-						<uib-bar type="warning" ng-if="ctrl.counts.total.ignored != 0" value="1000 * ctrl.counts.total.ignored / ctrl.counts.total.total" title="{{ctrl.counts.total.ignored}} ignored tasks"></uib-bar>
+			<th><uib-progress max="1000" animate="false" ng-if="ctrl.idealCount.total.total != 0">
+						<uib-bar type="success" ng-if="ctrl.idealCount.total.success != 0" value="1000 * ctrl.idealCount.total.success / ctrl.idealCount.total.total" title="{{ctrl.idealCount.total.success}} successful tasks"></uib-bar>
+						<uib-bar type="danger" ng-if="ctrl.idealCount.total.error != 0" value="1000 * ctrl.idealCount.total.error / ctrl.idealCount.total.total" title="{{ctrl.idealCount.total.error}} failed tasks"></uib-bar>
+						<uib-bar type="warning" ng-if="ctrl.idealCount.total.ignored != 0" value="1000 * ctrl.idealCount.total.ignored / ctrl.idealCount.total.total" title="{{ctrl.idealCount.total.ignored}} ignored tasks"></uib-bar>
 				</uib-progress>
-				<uib-progress max="1000" animate="false" ng-if="ctrl.counts.total.total == 0"></uib-progress>
+				<uib-progress max="1000" animate="false" ng-if="ctrl.idealCount.total.total == 0"></uib-progress>
 			</th>
 			<th ng-repeat="browser in state.visibleBrowsers" class="browser-header">
-				<uib-progress max="1000" animate="false" ng-if="ctrl.counts[browser.browserKey].total != 0">
-						<uib-bar type="success" ng-if="ctrl.counts[browser.browserKey].success != 0" value="1000 * ctrl.counts[browser.browserKey].success / ctrl.counts[browser.browserKey].total" title="{{ctrl.counts[browser.browserKey].success}} successful tasks"></uib-bar>
-						<uib-bar type="danger" ng-if="ctrl.counts[browser.browserKey].error != 0" value="1000 * ctrl.counts[browser.browserKey].error / ctrl.counts[browser.browserKey].total" title="{{ctrl.counts[browser.browserKey].error}} failed tasks"></uib-bar>
-						<uib-bar type="warning" ng-if="ctrl.counts[browser.browserKey].ignored != 0" value="1000 * ctrl.counts[browser.browserKey].ignored / ctrl.counts[browser.browserKey].total" title="{{ctrl.counts[browser.browserKey].ignored}} ignored tasks"></uib-bar>
+				<uib-progress max="1000" animate="false" ng-if="ctrl.idealCount[browser.browserKey].total != 0">
+						<uib-bar type="success" ng-if="ctrl.idealCount[browser.browserKey].success != 0" value="1000 * ctrl.idealCount[browser.browserKey].success / ctrl.idealCount[browser.browserKey].total" title="{{ctrl.idealCount[browser.browserKey].success}} successful tasks"></uib-bar>
+						<uib-bar type="danger" ng-if="ctrl.idealCount[browser.browserKey].error != 0" value="1000 * ctrl.idealCount[browser.browserKey].error / ctrl.idealCount[browser.browserKey].total" title="{{ctrl.idealCount[browser.browserKey].error}} failed tasks"></uib-bar>
+						<uib-bar type="warning" ng-if="ctrl.idealCount[browser.browserKey].ignored != 0" value="1000 * ctrl.idealCount[browser.browserKey].ignored / ctrl.idealCount[browser.browserKey].total" title="{{ctrl.idealCount[browser.browserKey].ignored}} ignored tasks"></uib-bar>
 				</uib-progress></th>
 		</tr>
 		<tr>
@@ -144,4 +144,64 @@
 				ng-switch-when="errorMsgs">{{ ctrl.getErrorMsgs(task, browser) }}</span></td>
 		</tr>
 	</tbody>
+	<tfoot>
+		<tr ng-if="!state.showIdealDurations">
+			<th><a href="#" ng-click="state.showIdealDurations = true; $event.preventDefault()">Show durations (1 execution/task)</a></th>
+		</tr>
+		<tr ng-if="state.showIdealDurations && (ctrl.idealDuration.total.success != 0 || ctrl.idealDuration.total.error != 0)">
+			<th>
+				<a href="#" ng-click="state.showIdealDurations = false; $event.preventDefault()">Hide</a><br>
+				Duration (1 execution / task): {{ ctrl.idealDuration.total.total | duration }}
+			</th>
+			<th ng-repeat="browser in state.visibleBrowsers">
+				<br>
+				{{ ctrl.idealDuration[browser.browserKey].total | duration }}
+			</th>
+		</tr>
+		<tr ng-if="state.showIdealDurations && ctrl.idealDuration.total.success != 0" class="success">
+			<td>
+				<span ng-class="ctrl.getStateIcon('success')"></span> {{ ctrl.idealDuration.total.success | duration }}
+			</td>
+			<td ng-repeat="browser in state.visibleBrowsers">
+				{{ ctrl.idealDuration[browser.browserKey].success | duration }}
+			</td>
+		</tr>
+		<tr ng-if="state.showIdealDurations && ctrl.idealDuration.total.error != 0" class="danger">
+			<td>
+				<span ng-class="ctrl.getStateIcon('error')"></span> {{ ctrl.idealDuration.total.error | duration }}
+			</td>
+			<td ng-repeat="browser in state.visibleBrowsers">
+				{{ ctrl.idealDuration[browser.browserKey].error | duration }}
+			</td>
+		</tr>
+		<tr ng-if="!state.showRealDurations">
+			<th><a href="#" ng-click="state.showRealDurations = true; $event.preventDefault()">Show durations (all executions)</a></th>
+		</tr>
+		<tr ng-if="state.showRealDurations && (ctrl.realDuration.total.success != 0 || ctrl.realDuration.total.error != 0)">
+			<th>
+				<a href="#" ng-click="state.showRealDurations = false; $event.preventDefault()">Hide</a><br>
+				Total duration (all executions): {{ ctrl.realDuration.total.total | duration }}
+			</th>
+			<th ng-repeat="browser in state.visibleBrowsers">
+				<br>
+				{{ ctrl.realDuration[browser.browserKey].total | duration }}
+			</th>
+		</tr>
+		<tr ng-if="state.showRealDurations && ctrl.realDuration.total.success != 0" class="success">
+			<td>
+				<span ng-class="ctrl.getStateIcon('success')"></span> {{ ctrl.realDuration.total.success | duration }}
+			</td>
+			<td ng-repeat="browser in state.visibleBrowsers">
+				{{ ctrl.realDuration[browser.browserKey].success | duration }}
+			</td>
+		</tr>
+		<tr ng-if="state.showRealDurations && ctrl.realDuration.total.error != 0" class="danger">
+			<td>
+				<span ng-class="ctrl.getStateIcon('error')"></span> {{ ctrl.realDuration.total.error | duration }}
+			</td>
+			<td ng-repeat="browser in state.visibleBrowsers">
+				{{ ctrl.realDuration[browser.browserKey].error | duration }}
+			</td>
+		</tr>
+	</tfoot>
 </table>

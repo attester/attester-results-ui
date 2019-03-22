@@ -26,6 +26,30 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
         function (attesterTaskInfoModal, executionStates, exportFile, attesterCampaignsManager,
                 mergeCampaignsConfigService) {
 
+            var getExecutionDuration = function (execution) {
+                if (execution.started && execution.finished) {
+                    return execution.finished.time - execution.started.time;
+                }
+            };
+
+            var zeroForEachTaskState = function () {
+                return {
+                    error : 0,
+                    success : 0,
+                    waiting : 0,
+                    ignored : 0,
+                    total : 0
+                };
+            };
+
+            var appendForEachTaskState = function (total, partial) {
+                total.error += partial.error;
+                total.success += partial.success;
+                total.waiting += partial.waiting;
+                total.ignored += partial.ignored;
+                total.total += partial.total;
+            };
+
             var sameCampaignHeaders = function (array1, array2) {
                 var l = array1.length;
                 if (l != array2.length) {
@@ -69,6 +93,8 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                         state.pageSize = 10;
                         state.currentPage = 1;
                         state.currentSortOrder = null;
+                        state.showRealDurations = false;
+                        state.showIdealDurations = false;
                         state.initialized = true;
                     }
                     this.tasksNumber = 0;
@@ -168,33 +194,48 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                                 return isIncluded;
                             });
                         }
-                        var counts = this.counts = {};
-                        var totalCount = counts.total = {
-                            error : 0,
-                            success : 0,
-                            waiting : 0,
-                            ignored : 0,
-                            total : 0
-                        };
+                        // ideal = only take one execution per task into account
+                        // real = take all executions into account
+                        var idealCount = this.idealCount = {};
+                        var realCount = this.realCount = {};
+                        var idealDuration = this.idealDuration = {};
+                        var realDuration = this.realDuration = {};
+                        var totalIdealCount = idealCount.total = zeroForEachTaskState();
+                        var totalRealCount = realCount.total = zeroForEachTaskState();
+                        var totalIdealDuration = idealDuration.total = zeroForEachTaskState();
+                        var totalRealDuration = realDuration.total = zeroForEachTaskState();
+
                         state.visibleBrowsers.forEach(function (curBrowser) {
-                            var curBrowserCount = {
-                                error : 0,
-                                success : 0,
-                                waiting : 0,
-                                ignored : 0,
-                                total : 0
-                            };
+                            var curBrowserIdealCount = idealCount[curBrowser.browserKey] = zeroForEachTaskState();
+                            var curBrowserRealCount = realCount[curBrowser.browserKey] = zeroForEachTaskState();
+                            var curBrowserIdealDuration = idealDuration[curBrowser.browserKey] = zeroForEachTaskState();
+                            var curBrowserRealDuration = realDuration[curBrowser.browserKey] = zeroForEachTaskState();
                             res.forEach(function (taskGroup) {
-                                var curTaskState = executionStates.getTaskState(taskGroup.browsers[curBrowser.browserKey]);
-                                curBrowserCount[curTaskState]++;
-                                curBrowserCount.total++;
+                                var task = taskGroup.browsers[curBrowser.browserKey];
+                                var curTaskExecution = executionStates.getExecution(task);
+                                var curTaskState = executionStates.getExecutionState(curTaskExecution);
+                                curBrowserIdealCount[curTaskState]++;
+                                curBrowserIdealCount.total++;
+                                var curTaskDuration = getExecutionDuration(curTaskExecution);
+                                if (curTaskDuration > 0) {
+                                    curBrowserIdealDuration[curTaskState] += curTaskDuration;
+                                    curBrowserIdealDuration.total += curTaskDuration;
+                                }
+                                task.executions.forEach(function (execution) {
+                                    var executionState = executionStates.getExecutionState(execution);
+                                    curBrowserRealCount[executionState]++;
+                                    curBrowserRealCount.total++;
+                                    var duration = getExecutionDuration(execution);
+                                    if (duration > 0) {
+                                        curBrowserRealDuration[executionState] += duration;
+                                        curBrowserRealDuration.total += duration;
+                                    }
+                                });
                             });
-                            counts[curBrowser.browserKey] = curBrowserCount;
-                            totalCount.error += curBrowserCount.error;
-                            totalCount.success += curBrowserCount.success;
-                            totalCount.waiting += curBrowserCount.waiting;
-                            totalCount.ignored += curBrowserCount.ignored;
-                            totalCount.total += curBrowserCount.total;
+                            appendForEachTaskState(totalIdealCount, curBrowserIdealCount);
+                            appendForEachTaskState(totalRealCount, curBrowserRealCount);
+                            appendForEachTaskState(totalIdealDuration, curBrowserIdealDuration);
+                            appendForEachTaskState(totalRealDuration, curBrowserRealDuration);
                         });
                         this.tasksNumber = res.length;
                         var currentSortOrder = state.currentSortOrder;
@@ -290,6 +331,8 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                         }
                     };
 
+                    this.getStateIcon = executionStates.getStateIcon;
+
                     this.getFilterClass = function (browser, filterState) {
                         var filterTestState = state.filterTestState;
                         var res = executionStates.getStateIcon(filterState);
@@ -319,12 +362,8 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
 
                     this.getDuration = function (task, browser) {
                         var execution = executionStates.getExecution(task.browsers[browser.browserKey]);
-                        if (execution && execution.started) {
-                            if (execution.finished) {
-                                return (execution.finished.time - execution.started.time);
-                            }
-                        }
-                        return -1;
+                        var duration = getExecutionDuration(execution);
+                        return duration >= 0 ? duration : -1;
                     };
                     this.sortOrders.push({
                         name : "Duration",

@@ -363,12 +363,12 @@ angular.module("attesterCampaign", []).factory("AttesterCampaign", function () {
         }
         this.clearCachedContent();
         this.events.push(event);
-        if (!/^(test|error$)/.test(eventName) && (!this.mergeInfo || !this.lastUpdate)) {
-            // events whose name start with "test" and the error event can use the clock of the slave,
+        if (!/^(test|log$|error$)/.test(eventName) && (!this.mergeInfo || !this.lastUpdate)) {
+            // events whose name start with "test" and the log and error events can use the clock of the slave,
             // which may differ from the one of the server
             // merged reports have their events in a non-chronological order
             if (event.time < this.lastUpdate) {
-                console.log("Regression in time, passing from " + this.lastUpdate + " to " + event.time);
+                console.log("Regression in time, passing from " + this.lastUpdate + " to " + event.time + " in " + eventName);
             }
             this.lastUpdate = event.time;
         }

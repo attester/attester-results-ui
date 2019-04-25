@@ -80,7 +80,7 @@
 			<dl class="dl-horizontal" ng-switch-when="serverURL">
 				<dt>Attester server URL</dt>
 				<dd>
-					<a target="_blank" ng-href="{{source.serverURL}}">{{source.serverURL}}</a>,
+					<a target="_blank" rel="noopener" ng-href="{{source.serverURL}}">{{source.serverURL}}</a>,
 					<span
 						ng-class="{glyphicon: true, 'glyphicon-ok-circle': source.connected, 'glyphicon-remove-circle': !source.connected}"></span>
 					{{source.connected ? 'connected': 'not connected'}}

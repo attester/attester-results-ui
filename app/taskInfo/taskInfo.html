@@ -91,14 +91,15 @@
 					{{errorEvent.error.stack.$displayed ? 'Hide' : 'Show' }} stack</button>
 				<ul uib-collapse="!errorEvent.error.stack.$displayed">
 					<li ng-repeat="stackItem in errorEvent.error.stack">
-						<div>
+						<div ng-if="stackItem['function']">
 							Function:
 							<code>{{ stackItem['function'] }}</code>
 						</div>
 						<div ng-if="stackItem.file">
 							File:
-							<code>{{ stackItem.file }}</code>
+							<a target="_blank" rel="noopener" ng-href="{{ stackItem.file }}"><code>{{ stackItem.file }}</code></a>
 							<small ng-if="stackItem.line">line {{ stackItem.line }}</small>
+							<small ng-if="stackItem.column">column {{ stackItem.column }}</small>
 						</div>
 					</li>
 				</ul>

@@ -212,6 +212,9 @@ angular.module("attesterTasksTable", ["attesterTaskInfoModal", "attesterExecutio
                             var curBrowserRealDuration = realDuration[curBrowser.browserKey] = zeroForEachTaskState();
                             res.forEach(function (taskGroup) {
                                 var task = taskGroup.browsers[curBrowser.browserKey];
+                                if (!task) {
+                                    return;
+                                }
                                 var curTaskExecution = executionStates.getExecution(task);
                                 var curTaskState = executionStates.getExecutionState(curTaskExecution);
                                 curBrowserIdealCount[curTaskState]++;

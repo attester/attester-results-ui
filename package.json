@@ -23,7 +23,7 @@
     "karma-webpack": "^2.0.5",
     "mocha": "~3.0.2",
     "sockjs-client": "^1.1.4",
-    "webpack": "^3.7.1"
+    "webpack": "^5.75.0"
   },
   "dependencies": {
     "express": "~4.14.0",
